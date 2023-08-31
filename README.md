@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
-# DiscordBot
-=======
 # DiscordBot
 
 ## Description
@@ -40,5 +37,3 @@ https://github.com/GGC-SD/DiscordBot.git
 ## Progress Tracking Tool
 - Jira
 - [Progress tool Link](https://jira.ggc.edu/secure/RapidBoard.jspa?rapidView=29&projectKey=SDAD&view=planning&selectedIssue=SDAD-249&epics=visible&issueLimit=100)
-
->>>>>>> Stashed changes
