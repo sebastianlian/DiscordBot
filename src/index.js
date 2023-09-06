@@ -1,5 +1,5 @@
 require('dotenv').config();
-const {Client, IntentsBitField} = require('discord.js');
+const {Client, IntentsBitField, Collection} = require('discord.js');
 
 //These are the diffrent permissions the bot is allowed to get access to
 //Guild == Server
@@ -10,16 +10,65 @@ const client = new Client({
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMembers,
         IntentsBitField.Flags.GuildMessages,
-        IntentsBitField.Flags.MessageContent,
-    ],
+        IntentsBitField.Flags.MessageContent
+    ]
 });
+
+client.commands = new Collection();
 
 // Makes the bot send a message with its tag name
 // identifiying that it is online and ready in the VS console.
 
 client.on('ready', (clientInstance) =>{
     console.log(`⚡ ${clientInstance.user.tag} ⚡ is online.`);
-});
+
+    const guildId = '1146906893911064626';
+    const guild = client.guilds.cache.get(guildId);
+    let commands
+    
+    if (guild) {
+        commands = guild.commands
+    } else {
+        commands = client.application?.commands
+    }
+
+    commands?.create({
+        name: 'help',
+        description: 'Helps by listing out all commands.'
+    })
+
+    commands?.create({
+        name: 'blacklist',
+        description: 'Adds or Removes people from the blacklist.'
+    })
+
+    commands?.create({
+        name: 'purge',
+        description: 'Kicks users who are inactive.'
+    })
+})
+
+client.on('interactionCreate', async (interaction) => {
+    if(!interaction.isCommand()){
+        return
+    }
+
+    const { commandName, options} = interaction
+
+    if (commandName === 'help') {
+        interaction.reply({
+            content: 'How can I help.'
+        })
+    } else if (commandName === 'blacklist') {
+        interaction.reply({
+            content: 'User has been added.'
+        })
+    } else if (commandName === 'purge') {
+        interaction.reply({
+            content: 'Inactive users have been removed.'
+        })
+    }
+})
 
 // The bot is given the instruction to not listen to itself at all, and
 // to say "hello" to any user in the server that says "hello".
