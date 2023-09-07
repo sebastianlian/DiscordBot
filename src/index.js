@@ -1,5 +1,5 @@
 require('dotenv').config();
-const {Client, IntentsBitField, Collection} = require('discord.js');
+const { Client, IntentsBitField, Collection, ApplicationCommandType, REST, Routes, Events, MessageButton, MessageActionRow } = require('discord.js');
 
 //These are the diffrent permissions the bot is allowed to get access to
 //Guild == Server
@@ -39,7 +39,29 @@ client.on('ready', (clientInstance) =>{
 
     commands?.create({
         name: 'blacklist',
-        description: 'Adds or Removes people from the blacklist.'
+        description: 'Adds or Removes people from the blacklist.',
+        options: [{
+            type: 1, // subcommand type
+            name: 'add',
+            description: 'Adds User',
+            options: [{
+                type: 6, // User Type
+                name: 'user',
+                description: 'User you are adding',
+                required: true,
+            }]
+        },
+        {
+            type: 1, // subcommand Type
+            name: 'remove',
+            description: 'Removes User',
+            options: [{
+                type: 6, // User Type
+                name: 'user',
+                description: 'User you are removing',
+                required: true,
+            }]
+        }]
     })
 
     commands?.create({
@@ -60,15 +82,28 @@ client.on('interactionCreate', async (interaction) => {
             content: 'How can I help.'
         })
     } else if (commandName === 'blacklist') {
-        interaction.reply({
-            content: 'User has been added.'
-        })
+        const subcommand = interaction.options.getSubcommand();
+        const user = interaction.options.getUser('user');
+        console.log(user);
+
+        if (subcommand === 'add'){
+            interaction.reply({
+                content: 'User has been added.'
+            })
+        } else if (subcommand === 'remove'){
+            interaction.reply({
+                content: 'User has been removed.',
+                ephemeral: true
+            })
+        }
+
     } else if (commandName === 'purge') {
         interaction.reply({
-            content: 'Inactive users have been removed.'
-        })
+            content: 'Purge complete.',
+            ephemeral: true
+        });
     }
-})
+});
 
 // The bot is given the instruction to not listen to itself at all, and
 // to say "hello" to any user in the server that says "hello".
