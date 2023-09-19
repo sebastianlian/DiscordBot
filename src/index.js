@@ -104,6 +104,9 @@ client.on('interactionCreate', async (interaction) => {
         '/show inactivity - Shows members who are considered "inactive" that are eligible to be purged.'
     ];
 
+    // This should be usable by everyone or at least have one for admins who can see about 
+    // users and for server members who can see only the roles inactivity times
+    // See about adding a command that shows the diffrent users and roles and tells how long they can be inactive for.
     if (commandName === 'help') {
         interaction.reply({
             content: cmds.join('\n')
