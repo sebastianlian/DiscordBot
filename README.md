@@ -48,5 +48,5 @@ https://github.com/GGC-SD/DiscordBot.git
 - Install dotenv on using the terminal and the command npm install dotenv (This causes allows your bot project a place for the bots token to be stored later in the project and then be placed into a gitignore file in order to keep your token and other confidential project information safe if the bot is shared on GitHub.)
 - Install discord.js using the terminal and the command npm i discord.js.
 - Create a Discord bot on the Discord bot <a href = "https://discord.com/login?redirect_to=%2Fdevelopers%2Fapplications%2F">Discord Developer Portal</a>.
-- Add the bot's token (Discord developer Portal-> application-> "specific app"-> bot -> Reset Token)to config.json and adjuste the configuration to indicate where the script is on your local machine.
+- Add the bot's token (Discord developer Portal-> application-> "specific app"-> bot -> Reset Token) to config.json and adjuste the configuration to indicate where the script is on your local machine.
 - Run the bot by using nodemon or nodemon index.js or any other command you prefer. 
