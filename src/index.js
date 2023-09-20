@@ -1,5 +1,8 @@
 require('dotenv').config();
-const { Client, IntentsBitField, Collection, ApplicationCommandType, REST, Routes, Events, MessageButton, MessageActionRow } = require('discord.js');
+const { Client, IntentsBitField, Collection, ApplicationCommandType, Events, MessageButton, MessageActionRow } = require("discord.js");
+const { REST } = require("@discordjs/rest");
+const { Routes } = require("discord-api-types/v9");
+const fs = require("fs");
 
 //These are the diffrent permissions the bot is allowed to get access to
 //Guild == Server
@@ -14,134 +17,77 @@ const client = new Client({
     ]
 });
 
+//Reads the commands folder and checks for any files that end with .js
+const commandFiles = fs.readdirSync("src/commands").filter(file => file.endsWith(".js"));
+
+const commands = [];
+
 client.commands = new Collection();
+
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+    commands.push(command.data.toJSON());
+    client.commands.set(command.data.name, command);
+}
+
+client.once("ready", () => {
+    const CLIENT_ID = client.user.id;
+    const rest = new REST({
+        version: "9"
+    }).setToken(process.env.TOKEN);
+
+    //Registers the commands
+    (async () => {
+        try {
+            if (process.env.ENV === "production"){
+                await rest.put(Routes.applicationCommands(CLIENT_ID), {
+                    body: commands
+                });
+                console.log("Successfully registered commands globally.")
+            } else {
+                await rest.put(Routes.applicationGuildCommands(CLIENT_ID, process.env.GUILD_ID), {
+                    body: commands
+                });
+                console.log("Successfully registered commands per guild.")
+            }
+        } catch (err) {
+            if (err) {
+                console.error(err);
+            }
+        }
+    })();
+});
 
 // Makes the bot send a message with its tag name
 // identifiying that it is online and ready in the VS console.
 
 client.on('ready', (clientInstance) =>{
     console.log(`⚡ ${clientInstance.user.tag} ⚡ is online.`);
-
-    const guildId = '1146906893911064626';
-    const guild = client.guilds.cache.get(guildId);
-    let commands
-    
-    if (guild) {
-        commands = guild.commands
-    } else {
-        commands = client.application?.commands
-    }
-
-    commands?.create({
-        name: 'help',
-        description: 'Helps by listing out all commands.'
-    })
-
-    commands?.create({
-        name: 'blacklist',
-        description: 'Adds or Removes people from the blacklist.',
-        options: [{
-            type: 1, // subcommand type
-            name: 'add',
-            description: 'Adds User',
-            options: [{
-                type: 6, // User Type
-                name: 'user',
-                description: 'User you are adding',
-                required: true,
-            }]
-        },
-        {
-            type: 1, // subcommand Type
-            name: 'remove',
-            description: 'Removes User',
-            options: [{
-                type: 6, // User Type
-                name: 'user',
-                description: 'User you are removing',
-                required: true,
-            }]
-        },
-        {
-            type: 1, // subcommand Type
-            name: 'show',
-            description: 'Shows the current blacklisted user/roles',
-        }
-    ]
-    })
-
-    commands?.create({
-        name: 'purge',
-        description: 'Kicks users who are inactive.'
-    })
-
-    commands?.create({
-        name: 'setpurge',
-        description: 'Sets the specified automated purge window (in days).',
-        options: [{
-            type: 4, 
-            name: 'days',
-            description: 'Number of days'
-        }]    
-    })
 })
 
 client.on('interactionCreate', async (interaction) => {
+    //checks if a chat message is a valid command
     if(!interaction.isCommand()){
         return
     }
 
-    const { commandName, options} = interaction
+    const command = client.commands.get(interaction.commandName);
 
-    const cmds = [
-        '/help - Lists out all the different configuration commands for the bot.',
-        '/blacklist show - Shows the current blacklisted user/roles',
-        '/blacklist add (user/role) - Lets you add a specific user/role to a blacklist which makes them bypass the purges.',
-        '/blacklist remove (user/role) - Lets you remove a specific user/role to a blacklist.',
-        '/purge - Starts a manual purge which will gather all inactive users and send specified channel for confirmation.',
-        '/setpurge (time in days) - Sets the specified automated purge window (in days).',
-        '/timer (role) (time) - Sets a time window (in days) for a role before considering them inactive.',
-        '/show inactivity - Shows members who are considered "inactive" that are eligible to be purged.'
-    ];
+    if(!command){
+        return;
+    }
 
-    // This should be usable by everyone or at least have one for admins who can see about 
-    // users and for server members who can see only the roles inactivity times
-    // See about adding a command that shows the diffrent users and roles and tells how long they can be inactive for.
-    if (commandName === 'help') {
-        interaction.reply({
-            content: cmds.join('\n')
-        });
-    } else if (commandName === 'blacklist') {
-        const subcommand = interaction.options.getSubcommand();
-        const user = interaction.options.getUser('user');
-        console.log(user);
+    try {
+        await command.execute(interaction);
+    } catch(err) {
+        if (err) {
+            console.error(err);
 
-        if (subcommand === 'add'){
-            interaction.reply({
-                content: 'User has been added.'
-            });
-        } else if (subcommand === 'remove'){
-            interaction.reply({
-                content: 'User has been removed.',
+            await interaction.reply({
+                content: "An error has occurred",
                 ephemeral: true
             });
-        } else if (subcommand === 'show'){
-            interaction.reply({
-                content: 'List of user/roles in blacklist'
-            });
         }
-
-    } else if (commandName === 'purge') {
-        interaction.reply({
-            content: 'Purge complete.',
-            ephemeral: true
-        });
-    } else if (commandName === 'set'){
-        const subcommand = interaction.options.getSubcommand();
-        const days = interaction.options.getInteger('days')
-        interaction.reply({
-            content: days
-        })
     }
 });
 
