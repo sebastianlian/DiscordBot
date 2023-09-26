@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -17,8 +17,25 @@ module.exports = {
         '/show inactivity - Shows members who are considered "inactive" that are eligible to be purged.'
     	];
 
-		interaction.reply({
-			content: cmds.join('\n')
-		});
-	}
+      const embed = new EmbedBuilder()
+        .setTitle("Help")
+        .setDescription("List of all available commands.")
+        .setColor(0x0099FF)
+
+        for (const cmd of cmds) {
+          const cmdParts = cmd.split(' - ');
+          const cmdName = cmdParts[0];
+          const cmdDesc = cmdParts[1];
+    
+          embed.addFields({
+            name: cmdName, 
+            value: cmdDesc,
+          });
+        } 
+
+		  interaction.reply({
+			  //content: cmds.join('\n'),
+        embeds: [embed],
+		  });
+	  }
 };

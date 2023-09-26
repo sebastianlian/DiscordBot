@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 
 module.exports = {
 	//Example of subcommands. Only accepts a user value and the command will not execute without a user.
@@ -38,16 +38,29 @@ module.exports = {
     	switch (subcommand) {
       		case "add":
         		const userToAdd = interaction.options.getUser("user");
-        		await interaction.reply(`Added ${userToAdd.tag} to the blacklist.`);
+				const addEmbed = new EmbedBuilder()
+					.setTitle(`Added ${userToAdd.tag} to the blacklist.`)
+					.setColor(0x2ECC71)
+        		await interaction.reply({
+					embeds: [addEmbed],
+				});
         		break;
 
       		case "remove":
         		const userToRemove = interaction.options.getUser("user");
-        		await interaction.reply(`Removed ${userToRemove.tag} from the blacklist.`);
+				const removeEmbed = new EmbedBuilder()
+					.setTitle(`Removed ${userToRemove.tag} from the blacklist.`)
+        		await interaction.reply({
+					embeds: [removeEmbed],
+				});
         		break;
 
       		case "show":
-        		await interaction.reply("Here is the list of blacklisted users/roles.");
+				const listEmbed = new EmbedBuilder()
+					.setTitle("Here is the list of blacklisted users/roles.")
+        		await interaction.reply({
+					embeds: [listEmbed],
+				});
         	break;
     	}	
 	},
