@@ -3,6 +3,7 @@ const { Client, IntentsBitField, Collection, ApplicationCommandType, Events, Mes
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
+const mongoose = require('mongoose');
 
 //These are the diffrent permissions the bot is allowed to get access to
 //Guild == Server
@@ -63,6 +64,14 @@ client.once("ready", () => {
 
 client.on('ready', (clientInstance) =>{
     console.log(`⚡ ${clientInstance.user.tag} ⚡ is online.`);
+    (async()=> {
+        try {
+            await mongoose.connect(process.env.databaseToken);
+        console.log("Connected to DB");
+        } catch (error) {
+            console.log(`Error: ${error}`);
+        }
+        })();
 })
 
 client.on('interactionCreate', async (interaction) => {
@@ -102,6 +111,7 @@ client.on('messageCreate', (message) => {
     if(message.content === "hello") {
         message.reply("hello");
     }
+    
 })
 
 //1.) The Token for the bot is found in the
@@ -110,6 +120,8 @@ client.on('messageCreate', (message) => {
 // The ".env" file contains only one line which is ***TOKEN = bot_token***
 // Due to this being a GitHub group project the ".env" file will not be added to the ".gitignore" file
 // for transparency.
+
+
 
 client.login(process.env.TOKEN);
 
