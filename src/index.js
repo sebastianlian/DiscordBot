@@ -1,9 +1,8 @@
 require('dotenv').config();
 const { Client, IntentsBitField, Collection, ApplicationCommandType, Events, MessageButton, MessageActionRow } = require("discord.js");
-const { REST } = require("@discordjs/rest");
-const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
 const mongoose = require('mongoose');
+const { eventNames } = require('process');
 
 //These are the diffrent permissions the bot is allowed to get access to
 //Guild == Server
@@ -31,33 +30,18 @@ for (const file of commandFiles) {
     client.commands.set(command.data.name, command);
 }
 
-client.once("ready", () => {
-    const CLIENT_ID = client.user.id;
-    const rest = new REST({
-        version: "9"
-    }).setToken(process.env.TOKEN);
+//Reads the events folder and checks for any files that end with .js
+const eventFiles = fs.readdirSync("src/events").filter(file => file.endsWith(".js"));
 
-    //Registers the commands
-    (async () => {
-        try {
-            if (process.env.ENV === "production"){
-                await rest.put(Routes.applicationCommands(CLIENT_ID), {
-                    body: commands
-                });
-                console.log("Successfully registered commands globally.")
-            } else {
-                await rest.put(Routes.applicationGuildCommands(CLIENT_ID, process.env.GUILD_ID), {
-                    body: commands
-                });
-                console.log("Successfully registered commands per guild.")
-            }
-        } catch (err) {
-            if (err) {
-                console.error(err);
-            }
-        }
-    })();
-});
+for (const file of eventFiles) {
+    const events = require(`./events/${file}`);
+
+    if (events.once) {
+        client.once(events.name, (...args) => events.execute(...args, commands));
+    } else {
+        client.on(events.name, (...args) => evenys.execute(...args, commands));
+    }
+}
 
 // Makes the bot send a message with its tag name
 // identifiying that it is online and ready in the VS console.
@@ -73,32 +57,6 @@ client.on('ready', (clientInstance) =>{
         }
         })();
 })
-
-client.on('interactionCreate', async (interaction) => {
-    //checks if a chat message is a valid command
-    if(!interaction.isCommand()){
-        return
-    }
-
-    const command = client.commands.get(interaction.commandName);
-
-    if(!command){
-        return;
-    }
-
-    try {
-        await command.execute(interaction);
-    } catch(err) {
-        if (err) {
-            console.error(err);
-
-            await interaction.reply({
-                content: "An error has occurred",
-                ephemeral: true
-            });
-        }
-    }
-});
 
 // The bot is given the instruction to not listen to itself at all, and
 // to say "hello" to any user in the server that says "hello".
