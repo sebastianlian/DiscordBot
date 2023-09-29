@@ -1,3 +1,5 @@
+const blacklistModel = require("../models/blacklistSchema");
+
 module.exports = {
     name: "interactionCreate",
     once: true,
@@ -5,6 +7,14 @@ module.exports = {
         //checks if a chat message is a valid command
         if(!interaction.isCommand()){
             return
+        }
+
+        //get user db information and pass to command
+        let profileData;
+        try {
+            profileData = await blacklistModel.findOne({userI: interaction.user.id});
+        } catch (error) {
+            
         }
     
         const command = interaction.client.commands.get(interaction.commandName);
@@ -14,7 +24,7 @@ module.exports = {
         }
     
         try {
-            await command.execute(interaction);
+            await command.execute(interaction, profileData);
         } catch(err) {
             if (err) {
                 console.error(err);
