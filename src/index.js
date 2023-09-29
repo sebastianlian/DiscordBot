@@ -48,6 +48,7 @@ for (const file of eventFiles) {
 
 client.on('ready', (clientInstance) =>{
     console.log(`⚡ ${clientInstance.user.tag} ⚡ is online.`);
+//Connects the mongodb database to the code
     (async()=> {
         try {
             await mongoose.connect(process.env.databaseToken);
