@@ -1,0 +1,13 @@
+const mongoose = require("mongoose");
+const blacklistSchema = new mongoose.Schema({
+  userId: { type: String, require: true, unique: true },
+  userName: {type: String, require: true},
+  guildId: { type: String, require: true },
+  //rolename requirement false because user can be added from role or blacklist 
+  roleName: {type: String, require: false},
+
+});
+
+const model = (mongoose = mongoose.model("BlackList", blacklistSchema));
+
+module.exports.model;
