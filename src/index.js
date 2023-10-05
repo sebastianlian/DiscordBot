@@ -8,7 +8,7 @@ const { eventNames } = require('process');
 //Guild == Server
 //Client == Bot
 
-const client = new Client({
+ global.client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMembers,

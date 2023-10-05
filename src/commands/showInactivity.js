@@ -1,19 +1,21 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName("showInactivity")
-        .setDescription("Shows members who are considered inactive that are eligible to be purged.")
-        .addStringOption((option) =>
-            option
-                .setName("message")
-                .setDescription("the message to echo")
-                .setRequired(true)
-            ),
-    async executr(interaction) {
-        interaction.reply({
-            content: interaction.option.getString("message"),
-            emphemeral: true
-        });
-    }
-}
+	data: new SlashCommandBuilder()
+	//setName cannot have capital letters in it
+		.setName("show_inacticity")
+		.setDescription("pongs"),
+	
+    async execute(interaction) {
+
+		//Gets all users in the Guild(server) and stores them in the variable user_list
+		const users_list = client.guilds.fetch("1009961334382796832");
+
+		//iterates through all the members of the server and lists out their username.
+		// users_list.members.array.forEach(member => {
+		// 	interaction.reply.log(member.user.username);
+		// });
+
+		await interaction.reply("pong!");
+	}
+};
