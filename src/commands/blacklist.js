@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+const blacklistAdd = require("../functions/blacklistAdd");
 
 module.exports = {
 	//Example of subcommands. Only accepts a user value and the command will not execute without a user.
@@ -38,6 +39,7 @@ module.exports = {
     	switch (subcommand) {
       		case "add":
         		const userToAdd = interaction.options.getUser("user");
+				await blacklistAdd.insertBlacklistDB(userToAdd.id);
 				const addEmbed = new EmbedBuilder()
 					.setTitle(`Added ${userToAdd.tag} to the blacklist.`)
 					.setColor(0x2ECC71)

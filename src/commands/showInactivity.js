@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("showInactivity")
+        .setName("showinactivity")
         .setDescription("Shows members who are considered inactive that are eligible to be purged.")
         .addStringOption((option) =>
             option

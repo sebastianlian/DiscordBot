@@ -4,6 +4,6 @@ const userSchema = new mongoose.Schema({
   server: { type: String, require: true },
 });
 
-const model = (mongoose = mongoose.model("blackList", userSchema));
+const userDB = mongoose.model("blackList", userSchema);
 
 module.exports.model;
