@@ -1,9 +1,0 @@
-const mongoose = require("mongoose");
-const userSchema = new mongoose.Schema({
-  userId: { type: String, require: true, unique: true },
-  server: { type: String, require: true },
-});
-
-const model = mongoose.model("blackList", userSchema);
-
-module.exports.model;

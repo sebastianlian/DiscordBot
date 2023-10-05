@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 
 module.exports = {
+
 	data: new SlashCommandBuilder()
 	//setName cannot have capital letters in it
 		.setName("show_inactivity")
@@ -28,3 +29,4 @@ module.exports = {
 			});
 	}
 };
+
