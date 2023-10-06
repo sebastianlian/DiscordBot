@@ -2,31 +2,24 @@ const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 
 module.exports = {
 
-	data: new SlashCommandBuilder()
-	//setName cannot have capital letters in it
-		.setName("show_inactivity")
-		.setDescription("shows a list of inactive users"),
-		
-		//This code below gives discord
-		//users the option of entering information
-		//becasue the setRequired is true the discord user
-		//must add an input.
-		// .addUserOption((option) =>
-		// option.setName('user')
-		// .setDescription('user to be read')
-		// .setRequired(true)),
+    data: new SlashCommandBuilder()
+        .setName("showinactivity")
+        .setDescription("Shows members who are considered inactive that are eligible to be purged."),
+        // .addStringOption((option) =>
+        //     option
+        //         .setName("message")
+        //         .setDescription("the message to echo")
+        //         .setRequired(true)
+        //     ),
 
     async execute(interaction) {
-		
-		//This gets a single user within the server.
-		const user_list = interaction.guilds.get(/*process.env.GUILD_ID*/ "1146906893911064626");
-		
-		const addEmbed = new EmbedBuilder()
-			.setTitle('The users in this server are ' + user_list)
-			.setColor(0x2ECC71)
-			await interaction.reply({
-				embeds: [addEmbed],
-			});
-	}
-};
+        const serverMembers = await interaction.guild.members.fetch();
+        const allMembers = serverMembers.map(member => member.user.tag).join('\n');
+        
+        interaction.reply({
+            content: allMembers,
+            emphemeral: true
+        });
+    }
+}
 
