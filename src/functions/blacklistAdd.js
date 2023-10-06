@@ -1,5 +1,5 @@
 const { User } = require("discord.js");
-const blacklistSchema = require("../models/blacklistSchema")
+const blacklistSchema = require("../models/blacklistSchema");
 
 
 async function insertBlacklistDB(userid){
