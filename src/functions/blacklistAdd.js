@@ -4,13 +4,16 @@ const blacklistSchema = require("../models/blacklistSchema");
 
 async function insertBlacklistDB(userid){
     // await db.collection('blackListDB').insert(user)
-    const doc = await blacklistSchema.blackListDB.find();
+    const userIdString = userid.toString();
+    const doc = await blacklistSchema.blackListDB.findOne({ blackListedUsers: userIdString });
     if(doc){
-        doc.push(toString(userid));
-        await blacklistSchema.blackListDB.updateOne({blackListedUsers: doc});
+        // doc.push(toString(userid));
+        // await blacklistSchema.blackListDB.updateOne({blackListedUsers: doc});
+        console.log(`User ${userIdString} is already blacklisted.`);
     }
     else{
-        await blacklistSchema.blackListDB.create({blackListedUsers: [toString(userid)]});
+        await blacklistSchema.blackListDB.create({ blackListedUsers: userIdString });
+        console.log(`User ${userIdString} has been blacklisted.`);
     }
 }
 
