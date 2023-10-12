@@ -60,17 +60,19 @@ client.on('ready', (clientInstance) =>{
 })
 
 // The bot is given the instruction to not listen to itself at all, and
-// to say "hello" to any user in the server that says "hello".
+// to say "hello" to any user in the server that says or enters anything.
 
 client.on('messageCreate', (message) => {
+    const activeMember = [];
+    
     if (message.author.bot) {
         return;
     }
-    
-    if(message.content === "hello") {
-        message.reply("hello");
+
+    if(((message.content.match("[\s\S]*")) || (message.attachments.size()>0)) && !(activeMember.includes(message.author.tag))) {
+            message.reply("hello");
     }
-    
+  
 })
 
 //1.) The Token for the bot is found in the
