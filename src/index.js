@@ -39,7 +39,7 @@ for (const file of eventFiles) {
     if (events.once) {
         client.once(events.name, (...args) => events.execute(...args, commands));
     } else {
-        client.on(events.name, (...args) => evenys.execute(...args, commands));
+        client.on(events.name, (...args) => events.execute(...args, commands));
     }
 }
 
