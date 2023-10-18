@@ -1,10 +1,11 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("@discordjs/builders");
-const { ButtonStyle, Embed } = require("discord.js");
+const { ButtonStyle, Embed, PermissionFlagsBits } = require("discord.js");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("purge")
-		.setDescription("Kicks users who are inactive."),
+		.setDescription("Kicks users who are inactive.")
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	
     async execute(interaction) {
 		const embed = new EmbedBuilder()

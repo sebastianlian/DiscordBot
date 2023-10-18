@@ -1,10 +1,12 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+const {PermissionFlagsBits} = require("discord.js");
 
 module.exports = {
 
     data: new SlashCommandBuilder()
         .setName("showinactivity")
-        .setDescription("Shows members who are considered inactive that are eligible to be purged."),
+        .setDescription("Shows members who are considered inactive that are eligible to be purged.")
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
         // .addStringOption((option) =>
         //     option
         //         .setName("message")

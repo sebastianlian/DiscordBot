@@ -1,9 +1,11 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+const {PermissionFlagsBits} = require("discord.js");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("help")
-		.setDescription("Helps by listing out all commands."),
+		.setDescription("Helps by listing out all commands.")
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	
     async execute(interaction) {
 		const cmds = [
