@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 const blacklistAdd = require("../functions/blacklistAdd");
 const blacklistShow = require("../functions/blacklistShow");
 const blacklistRemove = require("../functions/blacklistRemove");
-const { channelMention, roleMention, userMention } = require('discord.js');
+const { channelMention, roleMention, userMention, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
 	//Example of subcommands. Only accepts a user value and the command will not execute without a user.
@@ -32,7 +32,8 @@ module.exports = {
 		.addSubcommand((subcommad) =>
 			subcommad.setName("show")
 			.setDescription("Shows the current blacklisted user/roles.")
-		),
+		)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
 	
     async execute(interaction) {

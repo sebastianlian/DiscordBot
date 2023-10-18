@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+const {PermissionFlagsBits} = require("discord.js");
 
 //Might use command
 module.exports = {
@@ -38,7 +39,8 @@ module.exports = {
                                     {name: "Moderator", value: "mod"},
                                     {name :"Junior Moderator", value: "jrmod"})
             )
-        ),
+        )
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	
         async execute(interaction) {
             const subcommand = interaction.options.getSubcommand();
