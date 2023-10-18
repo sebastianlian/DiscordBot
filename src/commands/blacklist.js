@@ -1,6 +1,8 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 const blacklistAdd = require("../functions/blacklistAdd");
 const blacklistShow = require("../functions/blacklistShow");
+const blacklistRemove = require("../functions/blacklistRemove");
+const { channelMention, roleMention, userMention } = require('discord.js');
 
 module.exports = {
 	//Example of subcommands. Only accepts a user value and the command will not execute without a user.
@@ -51,6 +53,7 @@ module.exports = {
 
       		case "remove":
         		const userToRemove = interaction.options.getUser("user");
+				await blacklistRemove.removeBlacklistDB(userToRemove.id);
 				const removeEmbed = new EmbedBuilder()
 					.setTitle(`Removed ${userToRemove.tag} from the blacklist.`)
         		await interaction.reply({
@@ -61,7 +64,7 @@ module.exports = {
       		case "show":
 				const listOfUsers = await blacklistShow.showBlacklistDB();
 				const listEmbed = new EmbedBuilder()
-					.setTitle(toString(listOfUsers))
+					.setTitle(listOfUsers)
 					// .setTitle("Here is the list of blacklisted users/roles.")
         		await interaction.reply({
 					embeds: [listEmbed],
