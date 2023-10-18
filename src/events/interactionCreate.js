@@ -2,7 +2,7 @@ const blacklistModel = require("../models/blacklistSchema");
 
 module.exports = {
     name: "interactionCreate",
-    once: true,
+    // once: true,
     async execute (interaction) {
         //checks if a chat message is a valid command
         if(!interaction.isCommand()){
