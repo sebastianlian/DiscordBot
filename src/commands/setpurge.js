@@ -1,4 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+const {PermissionFlagsBits} = require("discord.js");
+
 let purgeDays = 0;
 module.exports = {
   purgeDays: purgeDays,
@@ -10,7 +12,8 @@ module.exports = {
         .setName("number")
         .setDescription("number in days")
         .setRequired(true)
-    ),
+    )
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction) {
     purgeDays = interaction.options.getInteger("number");
