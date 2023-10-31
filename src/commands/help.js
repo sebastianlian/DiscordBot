@@ -38,6 +38,7 @@ module.exports = {
 		  interaction.reply({
 			  //content: cmds.join('\n'),
         embeds: [embed],
+        ephemeral: true
 		  });
 	  }
 };
