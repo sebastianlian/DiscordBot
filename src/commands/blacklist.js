@@ -55,12 +55,18 @@ module.exports = {
 
       		case "remove":
         		const userToRemove = interaction.options.getUser("user");
-				await blacklistRemove.removeBlacklistDB(userToRemove.id);
-				const removeEmbed = new EmbedBuilder()
-					.setTitle(`Removed ${userToRemove.tag} from the blacklist.`)
-        		await interaction.reply({
+				const userTag = userToRemove.tag;
+				blacklistRemove.removeBlacklistDB(userToRemove.id, userTag)
+					.then((resultMessage) => {
+				//await blacklistRemove.removeBlacklistDB(userToRemove.id);
+						const removeEmbed = new EmbedBuilder()
+				//	.setTitle(`Removed ${userToRemove.tag} from the blacklist.`)
+							.setTitle(resultMessage);
+
+        		 interaction.reply({
 					embeds: [removeEmbed],
 				});
+			})
         		break;
 
       		case "show":
