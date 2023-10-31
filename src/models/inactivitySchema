@@ -1,0 +1,14 @@
+const { SnowflakeUtil, User } = require("discord.js");
+const mongoose = require("mongoose");
+
+
+const inactivitySchema = new mongoose.Schema({
+    inactiveUsers:  [String],
+    inactiveTime: {type: Number, default: 0}
+  });
+  
+  const inactivityDB = mongoose.model("InactivityDB", inactivitySchema);
+  
+  module.exports = {
+    inactivityDB
+  }

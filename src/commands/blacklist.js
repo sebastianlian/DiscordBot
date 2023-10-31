@@ -50,26 +50,37 @@ module.exports = {
 					.setColor(0x2ECC71)
         		await interaction.reply({
 					embeds: [addEmbed],
+					ephemeral: true
 				});
         		break;
 
       		case "remove":
         		const userToRemove = interaction.options.getUser("user");
-				await blacklistRemove.removeBlacklistDB(userToRemove.id);
-				const removeEmbed = new EmbedBuilder()
-					.setTitle(`Removed ${userToRemove.tag} from the blacklist.`)
-        		await interaction.reply({
+				const userTag = userToRemove.tag;
+				blacklistRemove.removeBlacklistDB(userToRemove.id, userTag)
+					.then((resultMessage) => {
+				//await blacklistRemove.removeBlacklistDB(userToRemove.id);
+						const removeEmbed = new EmbedBuilder()
+				//	.setTitle(`Removed ${userToRemove.tag} from the blacklist.`)
+							.setTitle(resultMessage);
+
+        		 interaction.reply({
 					embeds: [removeEmbed],
+					ephemeral: true
 				});
+			})
         		break;
 
       		case "show":
-				const listOfUsers = await blacklistShow.showBlacklistDB();
+				const listOfUsers = await blacklistShow.showBlacklistDB(interaction.client);
+				// make the list into a single string
+				const userInList = listOfUsers.join(`\n`);
 				const listEmbed = new EmbedBuilder()
-					.setTitle(listOfUsers)
-					// .setTitle("Here is the list of blacklisted users/roles.")
+					.setTitle("Here is the list of blacklisted users/roles.")
+					.setDescription(`\n${userInList}`);
         		await interaction.reply({
 					embeds: [listEmbed],
+					ephemeral: true
 				});
         	break;
     	}	
