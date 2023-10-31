@@ -44,13 +44,14 @@ module.exports = {
     	switch (subcommand) {
       		case "add":
         		const userToAdd = interaction.options.getUser("user");
+				const mentionedUser = userMention(userToAdd.id);
 				await blacklistAdd.insertBlacklistDB(userToAdd.id);
 				const addEmbed = new EmbedBuilder()
-					.setTitle(`Added ${userToAdd.tag} to the blacklist.`)
+					.setDescription(`Added ${mentionedUser.toString()} to the blacklist.`)
 					.setColor(0x2ECC71)
         		await interaction.reply({
 					embeds: [addEmbed],
-					ephemeral: true
+					ephemeral: false
 				});
         		break;
 
@@ -62,11 +63,11 @@ module.exports = {
 				//await blacklistRemove.removeBlacklistDB(userToRemove.id);
 						const removeEmbed = new EmbedBuilder()
 				//	.setTitle(`Removed ${userToRemove.tag} from the blacklist.`)
-							.setTitle(resultMessage);
+							.setDescription(resultMessage);
 
         		 interaction.reply({
 					embeds: [removeEmbed],
-					ephemeral: true
+					ephemeral: false
 				});
 			})
         		break;
@@ -80,7 +81,7 @@ module.exports = {
 					.setDescription(`\n${userInList}`);
         		await interaction.reply({
 					embeds: [listEmbed],
-					ephemeral: true
+					ephemeral: false
 				});
         	break;
     	}	
