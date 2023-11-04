@@ -32,7 +32,7 @@ module.exports = {
 
     // The bot is given the instruction to not listen to itself at all, and
     // to say "hello" to any user in the server that says or enters anything.
-    await inactivity.listInactivity(interaction);
+
 //     client.on("messageCreate", (message) => {
 
 //       if (message.author.bot) {
@@ -43,8 +43,12 @@ module.exports = {
 //         message.content.match("[sS]*") ||
 //         message.attachments.size() > 0
 //         && !(activeMember.includes(message.author.tag))) {
+
+// await inactivity.listInactivity(interaction);
+const listOfPeople = inactivity.activeMembers
+
         interaction.reply({
-          content: "Here is the list of people that responded...",
+          content: listOfPeople.join('\n'),
           ephemeral: true,
         });
 //       }
