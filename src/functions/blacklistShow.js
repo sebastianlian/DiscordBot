@@ -12,7 +12,7 @@ async function showBlacklistDB(client) {
             const user = await client.users.fetch(id);
             // if there is a user add them to the list with the tag
             if (user) {
-                userList.push(user.tag);
+                userList.push(user);
             }
         }
     }
