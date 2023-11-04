@@ -59,19 +59,6 @@ client.on('ready', (clientInstance) =>{
         })();
 })
 
-// The bot is given the instruction to not listen to itself at all, and
-// to say "hello" to any user in the server that says "hello".
-
-client.on('messageCreate', (message) => {
-    if (message.author.bot) {
-        return;
-    }
-    
-    if(message.content === "hello") {
-        message.reply("hello");
-    }
-    
-})
 
 //1.) The Token for the bot is found in the
 // ".env" file so that the Token is more secure when 
