@@ -5,7 +5,7 @@
 
 ## Technologies Used
 - JavaScript
-- [Figma]()
+- [Node.js](https://nodejs.org/en/)
 
 ## Bit Bot Boot Team Roles
 **Gabriel Kerven**
@@ -50,3 +50,11 @@ https://github.com/GGC-SD/DiscordBot.git
 - Create a Discord bot on the Discord bot <a href = "https://discord.com/login?redirect_to=%2Fdevelopers%2Fapplications%2F">Discord Developer Portal</a>.
 - Add the bot's token (Discord developer Portal-> application-> "specific app"-> bot -> Reset Token) to config.json and adjuste the configuration to indicate where the script is on your local machine.
 - Run the bot by using nodemon or nodemon index.js or any other command you prefer. 
+
+## List of working features
+- ***Help command:*** Lists out all the different configuration commands for the bot.
+- ***Blacklist show command:*** Shows the current blacklisted user/roles. Blacklisted users will not be purged from the server.
+- ***Blacklist add command:*** Lets you add a specific user/role to the blacklist which makes them bypass the purges.
+- ***Blacklist remove command:*** Lets you remove a specific user/role from the blacklist.
+- ***Blacklist Database:*** Stores user data for the blacklist.
+- ***Show inactivity command:*** Shows members who are considered "inactive" that are eligible to be purged.
