@@ -1,0 +1,20 @@
+const { SnowflakeUtil, Role } = require("discord.js");
+const mongoose = require("mongoose");
+
+
+const roleTimeSchema = new mongoose.Schema({
+    roleID:  [String],
+    days: {type: int, default: 0}
+    // userId: { type: SnowflakeUtil, require: true, unique: true },
+    // userName: {type: String, require: true},
+    // guildId: { type: SnowflakeUtil, require: true },
+    // //rolename requirement false because user can be added from role or inactivtyList 
+    // roleName: {type: SnowflakeUtil, require: false},
+  
+  });
+
+  const RoleTimeDB = mongoose.model("RoleTime", roleTimeSchema);
+  // await inactiveDB.create([]);
+  module.exports = {
+    RoleTimeDB
+  }
