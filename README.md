@@ -58,3 +58,6 @@ https://github.com/GGC-SD/DiscordBot.git
 - ***Blacklist remove command:*** Lets you remove a specific user/role from the blacklist.
 - ***Blacklist Database:*** Stores user data for the blacklist.
 - ***Show inactivity command:*** Shows members who are considered "inactive" that are eligible to be purged.
+
+## Project Licencing
+- <a href = "https://github.com/GGC-SD/DiscordBot">Order 66</a> © 2023 by <a href = "https://github.com/GGC-SD/DiscordBot/graphs/contributors">Gabriel Kerven, Chidiebube Okebalama, Alexis Pardo, Ravjot Singh, Anca Doloc Mihu, David Rivera, Mike Deiters</a> is licensed under <a href = "https://creativecommons.org/licenses/by-nd/4.0/?ref=chooser-v1">CC BY-ND 4.0</a>
