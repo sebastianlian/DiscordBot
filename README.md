@@ -60,4 +60,4 @@ https://github.com/GGC-SD/DiscordBot.git
 - ***Show inactivity command:*** Shows members who are considered "inactive" that are eligible to be purged.
 
 ## Project Licencing
-- <a href = "https://github.com/GGC-SD/DiscordBot">Order 66</a> © 2023 by <a href = "https://github.com/GGC-SD/DiscordBot/graphs/contributors" target = "_blank">Gabriel Kerven, Chidiebube Okebalama, Alexis Pardo, Ravjot Singh, Anca Doloc Mihu, David Rivera, Mike Deiters</a> is licensed under <a target = "_blank" href = "https://creativecommons.org/licenses/by-nd/4.0/?ref=chooser-v1" >CC BY-ND 4.0</a>
+- <a href = "https://github.com/GGC-SD/DiscordBot">Order 66</a> © 2023 by <a href = "https://github.com/GGC-SD/DiscordBot/graphs/contributors" target = "_blank">Gabriel Kerven, Chidiebube Okebalama, Alexis Pardo, Ravjot Singh, Anca Doloc Mihu, David Rivera, Mike Deiters</a> is licensed under <a href = "https://creativecommons.org/licenses/by-nd/4.0/?ref=chooser-v1" target = "_blank">CC BY-ND 4.0</a>
