@@ -11,6 +11,8 @@ module.exports = {
       option
         .setName("number")
         .setDescription("number in days")
+        .setMinValue(1)
+        .setMaxValue(365)
         .setRequired(true)
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
