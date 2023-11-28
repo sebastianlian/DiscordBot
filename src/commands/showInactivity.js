@@ -67,7 +67,6 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
-        checkInactiveUsers(client);
 
         const inactiveUsers = getInactiveUsers();
 
