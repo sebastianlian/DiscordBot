@@ -1,7 +1,8 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
-const {PermissionFlagsBits} = require("discord.js");
+const { PermissionFlagsBits } = require("discord.js");
 
 let purgeDays = 0;
+
 module.exports = {
   purgeDays: purgeDays,
   data: new SlashCommandBuilder()
@@ -25,9 +26,10 @@ module.exports = {
 
     interaction.reply({
       embeds: [purgeDaysEmbed],
-      ephemeral: true
+      ephemeral: true,
     });
   },
+
   getPurgeDays: function () {
     return purgeDays;
   },

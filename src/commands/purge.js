@@ -79,5 +79,6 @@ module.exports = {
 				interaction.followUp("Purge confirmation timed out.");
 			}
 		});
-	},
+		
+	}
 };
