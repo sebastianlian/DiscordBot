@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for help.js</title>
+    <title>Code coverage report for commands/setpurge.js</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="prettify.css" />
-    <link rel="stylesheet" href="base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(sort-arrow-sprite.png);
+            background-image: url(../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="index.html">All files</a> help.js</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">commands</a> setpurge.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -98,20 +98,12 @@
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
 <a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a>
-<a name='L38'></a><a href='#L38'>38</a>
-<a name='L39'></a><a href='#L39'>39</a>
-<a name='L40'></a><a href='#L40'>40</a>
-<a name='L41'></a><a href='#L41'>41</a>
-<a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L36'></a><a href='#L36'>36</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -127,21 +119,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -150,51 +129,45 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
-const {PermissionFlagsBits} = require("discord.js");
+const { PermissionFlagsBits } = require("discord.js");
+&nbsp;
+let purgeDays = 0;
 &nbsp;
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName("help")
-		.setDescription("Helps by listing out all commands.")
+  purgeDays: purgeDays,
+  data: new SlashCommandBuilder()
+    .setName("setpurge")
+    .setDescription("Sets the specified automated purge window (in days).")
+    .addIntegerOption((option) =&gt;
+      option
+        .setName("number")
+        .setDescription("number in days")
+        .setMinValue(1)
+        .setMaxValue(365)
+        .setRequired(true)
+    )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-	
-    async execute(interaction) {
-		const cmds = [
-        '/help - Lists out all the different configuration commands for the bot.',
-        '/blacklist show - Shows the current blacklisted user/roles',
-        '/blacklist add (user/role) - Lets you add a specific user/role to a blacklist which makes them bypass the purges.',
-        '/blacklist remove (user/role) - Lets you remove a specific user/role to a blacklist.',
-        '/purge - Starts a manual purge which will gather all inactive users and send specified channel for confirmation.',
-        '/roletimer (role name) (amount of time in days) - Sets the grace period for a certain role.',
-        '/setpurge (time in days) - Sets the specified automated purge window (in days).',
-        '/timer (role) (time) - Sets a time window (in days) for a role before considering them inactive.',
-        '/show inactivity - Shows members who are considered "inactive" that are eligible to be purged.'
-    	];
 &nbsp;
-      const embed = new EmbedBuilder()
-        .setTitle("Help")
-        .setDescription("List of all available commands.")
-        .setColor(0x0099FF)
+  async execute(interaction) {
+    purgeDays = interaction.options.getInteger("number");
+    const purgeDaysEmbed = new EmbedBuilder()
+      .setTitle(`Purge window set to ${purgeDays} days.`)
+      .setColor(0x0099ff);
 &nbsp;
-        for (const cmd of cmds) {
-          const cmdParts = cmd.split(' - ');
-          const cmdName = cmdParts[0];
-          const cmdDesc = cmdParts[1];
-    
-          embed.addFields({
-            name: cmdName, 
-            value: cmdDesc,
-          });
-        } 
+    interaction.reply({
+      embeds: [purgeDaysEmbed],
+      ephemeral: true,
+    });
+  },
 &nbsp;
-		  interaction.reply({
-			  //content: cmds.join('\n'),
-        embeds: [embed],
-        ephemeral: true
-		  });
-	  }
+  getPurgeDays: function () {
+    return purgeDays;
+  },
 };</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -202,16 +175,16 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-11-28T17:36:53.609Z
+                at 2023-11-28T06:11:08.622Z
             </div>
-        <script src="prettify.js"></script>
+        <script src="../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="sorter.js"></script>
-        <script src="block-navigation.js"></script>
+        <script src="../sorter.js"></script>
+        <script src="../block-navigation.js"></script>
     </body>
 </html>
     

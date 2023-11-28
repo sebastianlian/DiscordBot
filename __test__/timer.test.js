@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 const { PermissionFlagsBits } = require("discord.js");
 
 jest.mock("../src/commands/setpurge", () => {
@@ -18,8 +18,13 @@ describe("Timer Command", () => {
     await command.execute(interaction);
 
     expect(interaction.reply).toHaveBeenCalledTimes(1);
-    expect(interaction.reply).toHaveBeenCalledWith({
-      content: expect.stringContaining("days from today will be:"),
-    });
+    
+    const replyArgument = interaction.reply.mock.calls[0][0];
+    expect(replyArgument.embeds).toHaveLength(1);
+    expect(replyArgument.embeds[0]).toBeInstanceOf(EmbedBuilder);
+
+    const embedContent = replyArgument.embeds[0].toJSON();
+    expect(embedContent.title).toBe("Timer");
+    expect(embedContent.description).toContain("days from today will be:");
   });
 });
