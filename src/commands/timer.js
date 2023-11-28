@@ -1,6 +1,6 @@
 //have timer.js show the amount of time left until the purge will execute
-const { SlashCommandBuilder } = require("@discordjs/builders");
-const { time, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
+const { time, PermissionFlagsBits, MessageEmbed, Embed } = require("discord.js");
 const setPurgeDate = require("./setpurge");
 
 module.exports = {
@@ -17,9 +17,14 @@ module.exports = {
     const timeString = time(currentDate);
     const dateString = currentDate.toLocaleDateString();
     const relative = time(currentDate, "R");
+
+    const timerEmbed = new EmbedBuilder()
+        .setTitle("Timer")
+        .setDescription(`The date and time ${days} days from today will be: ${dateString} ${timeString}`);
+
     await interaction.reply({
-      content: `The date and time ${days} days from today will be: ${dateString} ${timeString}`,
-      // ephemeral: true
+      embeds: [timerEmbed],
+      ephemeral: true
     });
   },
 };
