@@ -14,6 +14,7 @@ module.exports = {
         '/blacklist add (user/role) - Lets you add a specific user/role to a blacklist which makes them bypass the purges.',
         '/blacklist remove (user/role) - Lets you remove a specific user/role to a blacklist.',
         '/purge - Starts a manual purge which will gather all inactive users and send specified channel for confirmation.',
+        '/roletimer (role name) (amount of time in days) - Sets the grace period for a certain role.',
         '/setpurge (time in days) - Sets the specified automated purge window (in days).',
         '/timer (role) (time) - Sets a time window (in days) for a role before considering them inactive.',
         '/show inactivity - Shows members who are considered "inactive" that are eligible to be purged.'
