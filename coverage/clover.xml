@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1701132782203" clover="3.2.0">
-  <project timestamp="1701132782203" name="All files">
-    <metrics statements="57" coveredstatements="57" conditionals="3" coveredconditionals="3" methods="10" coveredmethods="10" elements="70" coveredelements="70" complexity="0" loc="57" ncloc="57" packages="1" files="4" classes="4"/>
+<coverage generated="1701146501673" clover="3.2.0">
+  <project timestamp="1701146501673" name="All files">
+    <metrics statements="58" coveredstatements="58" conditionals="3" coveredconditionals="3" methods="10" coveredmethods="10" elements="71" coveredelements="71" complexity="0" loc="58" ncloc="58" packages="1" files="4" classes="4"/>
     <file name="blacklist.js" path="C:\Users\Alexis\IdeaProjects\DiscordBot\src\commands\blacklist.js">
       <metrics statements="30" coveredstatements="30" conditionals="3" coveredconditionals="3" methods="7" coveredmethods="7"/>
       <line num="1" count="1" type="stmt"/>
@@ -57,7 +57,7 @@
       <line num="12" count="1" type="stmt"/>
     </file>
     <file name="timer.js" path="C:\Users\Alexis\IdeaProjects\DiscordBot\src\commands\timer.js">
-      <metrics statements="12" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <metrics statements="13" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
       <line num="2" count="1" type="stmt"/>
       <line num="3" count="1" type="stmt"/>
       <line num="4" count="1" type="stmt"/>
@@ -69,7 +69,8 @@
       <line num="17" count="1" type="stmt"/>
       <line num="18" count="1" type="stmt"/>
       <line num="19" count="1" type="stmt"/>
-      <line num="20" count="1" type="stmt"/>
+      <line num="21" count="1" type="stmt"/>
+      <line num="25" count="1" type="stmt"/>
     </file>
   </project>
 </coverage>

@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("@discordjs/builders");
-const { ButtonStyle, Embed, PermissionFlagsBits } = require("discord.js");
+const { ButtonStyle, Embed, PermissionFlagsBits, MessageEmbed } = require("discord.js");
+const { checkInactiveUsers, getInactiveUsers, activeUsers } = require("../functions/inactivity");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -35,21 +36,35 @@ module.exports = {
 
 		collector.on("collect", async (buttonInteraction) => {
 			if (buttonInteraction.customId === "confirm") {
+				const inactiveUsers = getInactiveUsers();
+
+				// goes through the list of users and gets id
+				for (const user of inactiveUsers) {
+					const member = interaction.guild.members.cache.get(user.id);
+
+					if (member) {
+						try {
+							// kicks members who are in the list
+							await member.kick("Inactive user purge");
+						} catch (error) {
+							console.error(`Error kicking user ${user.id}: ${error}`);
+						}
+					}
+				}
+
 				const confirmEmbed = new EmbedBuilder()
 					.setTitle("Purge Confirmed")
-					.setDescription("Removing users...")
+					.setDescription("Removing inactive users...")
 					.setColor(0x2ECC71);
 
 				await buttonInteraction.update({
 					embeds: [confirmEmbed],
 					components: [],
 				});
-			} 
-			
-			else {
+			} else {
 				const cancelEmbed = new EmbedBuilder()
 					.setTitle("Purge Canceled")
-					.setDescription("Purge canceled.")
+					.setDescription("No users removed.")
 					.setColor(0xE74C3C);
 
 				await buttonInteraction.update({
@@ -64,6 +79,5 @@ module.exports = {
 				interaction.followUp("Purge confirmation timed out.");
 			}
 		});
-
-	}
+	},
 };
