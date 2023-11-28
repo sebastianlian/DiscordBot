@@ -48,8 +48,23 @@ function checkInactiveUsers(client) {
 
 function getInactiveUsers() {
   const currentTime = Date.now();
+  // 10 second timer
+  //const inactivityTimer = 10 * 1000;
+  
   // 1 minute timer
   const inactivityTimer = 1 * 60 * 1000;
+
+  // 1 hour timer
+  //const inactivityTimer = 1 * 60 * 60 * 1000;
+
+  // 1 day timer
+  //const inactivityTimer = 24 * 60 * 60 * 1000;
+  
+  // 1 week timer
+  //const inactivityTimer = 7 * 24 * 60 * 60 * 1000;
+
+  // 1 month timer
+  //const inactivityTimer = 4 * 7 * 24 * 60 * 60 * 1000;
 
   // filters users who have exceded the inactivity timer
   return activeUsers.filter((user) => currentTime - user.messageDate > inactivityTimer);
