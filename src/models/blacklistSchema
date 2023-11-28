@@ -1,18 +1,11 @@
-const { SnowflakeUtil, User } = require("discord.js");
 const mongoose = require("mongoose");
 
 const blacklistSchema = new mongoose.Schema({
-  blackListedUsers:  [String],
-  // userId: { type: SnowflakeUtil, require: true, unique: true },
-  // userName: {type: String, require: true},
-  // guildId: { type: SnowflakeUtil, require: true },
-  // //rolename requirement false because user can be added from role or blacklist 
-  // roleName: {type: SnowflakeUtil, require: false},
-
+  blackListedUsers: [String],
 });
 
 const blackListDB = mongoose.model("BlacklistUser", blacklistSchema);
-// await blackListDB.create([]);
+
 module.exports = {
   blackListDB
 }
