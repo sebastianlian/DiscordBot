@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { Client, IntentsBitField, Collection, ApplicationCommandType, Events, MessageButton, MessageActionRow } = require("discord.js");
+const { checkInactiveUsers, activeMembers } = require('../src/functions/inactivity.js');
 const fs = require("fs");
 const mongoose = require('mongoose');
 const { eventNames } = require('process');
@@ -57,7 +58,9 @@ client.on('ready', (clientInstance) =>{
             console.log(`Error: ${error}`);
         }
         })();
-})
+
+        checkInactiveUsers(client);
+});
 
 
 //1.) The Token for the bot is found in the

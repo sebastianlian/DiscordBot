@@ -25,7 +25,7 @@ module.exports = {
 
     interaction.reply({
       embeds: [purgeDaysEmbed],
-      //   ephemeral: true
+      ephemeral: true
     });
   },
   getPurgeDays: function () {
