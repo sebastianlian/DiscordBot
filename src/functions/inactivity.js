@@ -59,7 +59,6 @@ function getInactiveUsers() {
   const currentTime = Date.now();
   // 10 second timer
   const inactivityTimer = 10 * 1000;
-
   // 1 minute timer
   //const inactivityTimer = 1 * 60 * 1000;
 
