@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1701193013630" clover="3.2.0">
+  <project timestamp="1701193013630" name="All files">
+    <metrics statements="80" coveredstatements="80" conditionals="5" coveredconditionals="5" methods="14" coveredmethods="14" elements="99" coveredelements="99" complexity="0" loc="80" ncloc="80" packages="1" files="6" classes="6"/>
+    <file name="blacklist.js" path="C:\Users\Alexis\IdeaProjects\DiscordBot\src\commands\blacklist.js">
+      <metrics statements="30" coveredstatements="30" conditionals="3" coveredconditionals="3" methods="7" coveredmethods="7"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="8" count="1" type="stmt"/>
+      <line num="16" count="1" type="stmt"/>
+      <line num="19" count="1" type="stmt"/>
+      <line num="25" count="1" type="stmt"/>
+      <line num="28" count="1" type="stmt"/>
+      <line num="34" count="1" type="stmt"/>
+      <line num="41" count="3" type="stmt"/>
+      <line num="44" count="3" type="cond" truecount="3" falsecount="0"/>
+      <line num="46" count="1" type="stmt"/>
+      <line num="47" count="1" type="stmt"/>
+      <line num="48" count="1" type="stmt"/>
+      <line num="49" count="1" type="stmt"/>
+      <line num="52" count="1" type="stmt"/>
+      <line num="56" count="1" type="stmt"/>
+      <line num="59" count="1" type="stmt"/>
+      <line num="60" count="1" type="stmt"/>
+      <line num="61" count="1" type="stmt"/>
+      <line num="64" count="1" type="stmt"/>
+      <line num="68" count="1" type="stmt"/>
+      <line num="73" count="1" type="stmt"/>
+      <line num="76" count="1" type="stmt"/>
+      <line num="78" count="1" type="stmt"/>
+      <line num="79" count="1" type="stmt"/>
+      <line num="82" count="1" type="stmt"/>
+      <line num="86" count="1" type="stmt"/>
+    </file>
+    <file name="help.js" path="C:\Users\Alexis\IdeaProjects\DiscordBot\src\commands\help.js">
+      <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="11" count="1" type="stmt"/>
+      <line num="23" count="1" type="stmt"/>
+      <line num="28" count="1" type="stmt"/>
+      <line num="29" count="9" type="stmt"/>
+      <line num="30" count="9" type="stmt"/>
+      <line num="31" count="9" type="stmt"/>
+      <line num="33" count="9" type="stmt"/>
+      <line num="39" count="1" type="stmt"/>
+    </file>
+    <file name="ping.js" path="C:\Users\Alexis\IdeaProjects\DiscordBot\src\commands\ping.js">
+      <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="5" count="1" type="stmt"/>
+      <line num="12" count="1" type="stmt"/>
+    </file>
+    <file name="setpurge.js" path="C:\Users\Alexis\IdeaProjects\DiscordBot\src\commands\setpurge.js">
+      <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="12" count="1" type="stmt"/>
+      <line num="22" count="1" type="stmt"/>
+      <line num="23" count="1" type="stmt"/>
+      <line num="27" count="1" type="stmt"/>
+      <line num="34" count="1" type="stmt"/>
+    </file>
+    <file name="showInactivity.js" path="C:\Users\Alexis\IdeaProjects\DiscordBot\src\commands\showInactivity.js">
+      <metrics statements="13" coveredstatements="13" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+      <line num="59" count="1" type="stmt"/>
+      <line num="60" count="1" type="stmt"/>
+      <line num="61" count="1" type="stmt"/>
+      <line num="63" count="1" type="stmt"/>
+      <line num="71" count="2" type="stmt"/>
+      <line num="73" count="2" type="stmt"/>
+      <line num="74" count="2" type="stmt"/>
+      <line num="75" count="2" type="stmt"/>
+      <line num="78" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="79" count="1" type="stmt"/>
+      <line num="84" count="1" type="stmt"/>
+      <line num="89" count="1" type="stmt"/>
+      <line num="93" count="1" type="stmt"/>
+    </file>
+    <file name="timer.js" path="C:\Users\Alexis\IdeaProjects\DiscordBot\src\commands\timer.js">
+      <metrics statements="13" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="13" count="1" type="stmt"/>
+      <line num="14" count="1" type="stmt"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="16" count="1" type="stmt"/>
+      <line num="17" count="1" type="stmt"/>
+      <line num="18" count="1" type="stmt"/>
+      <line num="19" count="1" type="stmt"/>
+      <line num="21" count="1" type="stmt"/>
+      <line num="25" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>
