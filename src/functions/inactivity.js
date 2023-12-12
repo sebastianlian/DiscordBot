@@ -2,8 +2,13 @@ const { blackListDB } = require("../models/blacklistSchema");
 const { inactiveDB } = require("../models/inactivitySchema");
 const activeUsers = [];
 
+
 async function checkInactiveUsers(client) {
   client.on("messageCreate", async (message) => {
+    if (!mongoose.connection.collections["inactiveusers"]) {
+      // If the database doesn't exist, create it
+      mongoose.connection.createCollection("inactiveusers");
+    }
     if (!message.author.bot) {
       const blacklistedUser = await blackListDB.findOne({
         blackListedUsers: message.author.id,
