@@ -8,6 +8,7 @@ const inactivitySchema = new mongoose.Schema({
   },
   lastMessageDate: {
     type: Date,
+    required: true,
   },
 });
 
