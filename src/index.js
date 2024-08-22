@@ -19,7 +19,7 @@ const { eventNames } = require('process');
 });
 
 //Reads the commands folder and checks for any files that end with .js
-const commandFiles = fs.readdirSync("src/commands").filter(file => file.endsWith(".js"));
+const commandFiles = fs.readdirSync("commands").filter(file => file.endsWith(".js"));
 
 const commands = [];
 
@@ -32,7 +32,7 @@ for (const file of commandFiles) {
 }
 
 //Reads the events folder and checks for any files that end with .js
-const eventFiles = fs.readdirSync("src/events").filter(file => file.endsWith(".js"));
+const eventFiles = fs.readdirSync("events").filter(file => file.endsWith(".js"));
 
 for (const file of eventFiles) {
     const events = require(`./events/${file}`);
