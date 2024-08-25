@@ -115,8 +115,8 @@ https://github.com/GGC-SD/DiscordBot.git
 2. Testing Lead :keyboard:
 
 **Najee Douglas**
-1.UI/UX Design :file_folder:
-2.Documentation Lead :scroll:
+1. UI/UX Design :file_folder:
+2. Documentation Lead :scroll:
 
 ## Project Flyer & Video
 - Flyer here
