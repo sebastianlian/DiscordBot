@@ -97,6 +97,8 @@ https://github.com/GGC-SD/DiscordBot.git
 - Create a Discord bot on the Discord bot <a href = "https://discord.com/login?redirect_to=%2Fdevelopers%2Fapplications%2F">Discord Developer Portal</a>.
 - Add the bot's token (Discord developer Portal-> application-> "specific app"-> bot -> Reset Token) to config.json and adjuste the configuration to indicate where the script is on your local machine.
 - Run the bot by using nodemon or nodemon index.js or any other command you prefer.
+- Add database token (Go to your MongoDB account. Under 'Database' select Clusters. Select the corresponding DB, Select the Connect button. Under 'Connect to your application', select Drivers. Follow the instructions to complete the setup and get the token for the database.)
+- Add guild id, in the Discord app, right-click on the Server Icon. Select copy Server ID.
 
 ## How To Run
 - Text here
