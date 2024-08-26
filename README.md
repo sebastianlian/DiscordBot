@@ -118,6 +118,11 @@ https://github.com/GGC-SD/DiscordBot.git
 1. UI/UX Design :file_folder:
 2. Documentation Lead :scroll:
 
+**Etienne Laccruche** 
+https://github.com/GGC-SD/DiscordBot.git
+1. Lead Programmer 💻
+2. Client Liaison 🧑‍🤝‍🧑
+
 ## Project Flyer & Video
 - Flyer here
 - Video link here
