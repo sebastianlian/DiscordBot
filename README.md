@@ -123,6 +123,10 @@ https://github.com/GGC-SD/DiscordBot.git
 1. Lead Programmer 💻
 2. Client Liaison 🧑‍🤝‍🧑
 
+**Jonathan Hummel**
+1. Lead Programmer ⭐
+2. Team Manager 🏴‍☠️
+
 ## Project Flyer & Video
 - Flyer here
 - Video link here
