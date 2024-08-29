@@ -64,13 +64,14 @@ client.on('ready', (clientInstance) =>{
 
 
 //1.) The Token for the bot is found in the
-// ".env" file so that the Token is more secure when 
+// ".env" file so that the Token is more secure when
 // publishing to git becasue the ".gitignore" file is ignoring the ".env" file.
 // The ".env" file contains only one line which is ***TOKEN = bot_token***
 // Due to this being a GitHub group project the ".env" file will not be added to the ".gitignore" file
 // for transparency.
 
 
+console.log('Discord Token:', process.env.TOKEN); // Debug line
 
 client.login(process.env.TOKEN);
 
