@@ -6,6 +6,10 @@ const inactivitySchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  userName: {
+    type: String,
+    required: true,
+  },
   lastMessageDate: {
     type: Date,
     required: true,
@@ -16,4 +20,4 @@ const inactiveDB = mongoose.model("InactiveUser", inactivitySchema);
 
 module.exports = {
   inactiveDB
-}
+};

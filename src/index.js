@@ -1,29 +1,29 @@
 require('dotenv').config();
-const { Client, IntentsBitField, Collection, ApplicationCommandType, Events, MessageButton, MessageActionRow } = require("discord.js");
-const { checkInactiveUsers, activeMembers } = require('../src/functions/inactivity.js');
-const fs = require("fs");
+const { Client, IntentsBitField, Collection } = require('discord.js');
+const {storeChannels, getAllChannels } = require('./functions/channelManager'); // Adjust the path accordingly
+const fs = require('fs');
 const mongoose = require('mongoose');
-const { eventNames } = require('process');
 
-//These are the diffrent permissions the bot is allowed to get access to
-//Guild == Server
-//Client == Bot
+// Dynamic import for chalk
+let chalk;
+(async () => {
+    chalk = (await import('chalk')).default;
+})();
 
- global.client = new Client({
+global.client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
-        IntentsBitField.Flags.GuildMembers,
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent
     ]
 });
 
-//Reads the commands folder and checks for any files that end with .js
-const commandFiles = fs.readdirSync("commands").filter(file => file.endsWith(".js"));
-
-const commands = [];
-
+// Initialize Collection
 client.commands = new Collection();
+
+// Read commands and events
+const commandFiles = fs.readdirSync("commands").filter(file => file.endsWith(".js"));
+const commands = [];
 
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
@@ -31,12 +31,10 @@ for (const file of commandFiles) {
     client.commands.set(command.data.name, command);
 }
 
-//Reads the events folder and checks for any files that end with .js
 const eventFiles = fs.readdirSync("events").filter(file => file.endsWith(".js"));
 
 for (const file of eventFiles) {
     const events = require(`./events/${file}`);
-
     if (events.once) {
         client.once(events.name, (...args) => events.execute(...args, commands));
     } else {
@@ -44,40 +42,26 @@ for (const file of eventFiles) {
     }
 }
 
-// Makes the bot send a message with its tag name
-// identifiying that it is online and ready in the VS console.
-
+// Bot ready event
 client.on('ready', (clientInstance) =>{
-    console.log(`⚡ ${clientInstance.user.tag} ⚡ is online.`);
+    console.log(chalk.yellow(`⚡ ${clientInstance.user.tag} ⚡ is online.`));
 //Connects the mongodb database to the code
     (async()=> {
         try {
             await mongoose.connect(process.env.databaseToken);
-        console.log("Connected to DB");
+            console.log(chalk.green("Connected to DB"));
         } catch (error) {
-            console.log(`Error: ${error}`);
+            console.log(chalk.red('DB is disconnected'));
         }
-        })();
+    })();
 
-        checkInactiveUsers(client);
+    // Store channels in the database
+     storeChannels(client);
+    //
+    // // Optional: Fetch and print all channels
+    // await getAllChannels();
+
+    console.log("All channels stored in DB.");
 });
 
-
-//1.) The Token for the bot is found in the
-// ".env" file so that the Token is more secure when
-// publishing to git becasue the ".gitignore" file is ignoring the ".env" file.
-// The ".env" file contains only one line which is ***TOKEN = bot_token***
-// Due to this being a GitHub group project the ".env" file will not be added to the ".gitignore" file
-// for transparency.
-
-
-console.log('Discord Token:', process.env.TOKEN); // Debug line
-
 client.login(process.env.TOKEN);
-
-//2.) By using the Node.js Terminal command ***nodemon*** or ***nodemon src/index.js***
-// you should be able to start up the bot if you enter ***ctrl + c*** it will turn off.
-
-//3.) In the "package.json" file you will find that the reason
-// why you only have to type in nodemon is becasue the script
-// location is already specified in "main:".
