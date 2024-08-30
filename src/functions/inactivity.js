@@ -6,7 +6,7 @@ const activeUsers = [];
 async function checkInactiveUsers(client) {
   client.on("messageCreate", async (message) => {
     if (!mongoose.connection.collections["inactiveusers"]) {
-      // If the database doesn't exist, create it
+      // if the database doesn't exist, create it
       mongoose.connection.createCollection("inactiveusers");
     }
     if (!message.author.bot) {
