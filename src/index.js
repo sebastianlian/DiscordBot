@@ -1,9 +1,10 @@
 require('dotenv').config();
 const { Client, IntentsBitField, Collection } = require('discord.js');
-const {storeChannels } = require('./functions/channelManager'); // adjust your path accordingly
+const {storeChannels } = require('./functions/channelManager'); // Adjust the path accordingly
+const fs = require('fs');
 const mongoose = require('mongoose');
 
-// dynamic import for chalk
+// Dynamic import for chalk
 let chalk;
 (async () => {
     chalk = (await import('chalk')).default;
@@ -41,10 +42,10 @@ for (const file of eventFiles) {
     }
 }
 
-// bot ready event
+// Bot ready event
 client.on('ready', (clientInstance) =>{
     console.log(chalk.yellow(`⚡ ${clientInstance.user.tag} ⚡ is online.`));
-// connects the mongodb database to the code
+//Connects the mongodb database to the code
     (async()=> {
         try {
             await mongoose.connect(process.env.databaseToken);
@@ -54,7 +55,7 @@ client.on('ready', (clientInstance) =>{
         }
     })();
 
-    // store channels in the database
+    // Store channels in the database
      storeChannels(client);
 });
 
