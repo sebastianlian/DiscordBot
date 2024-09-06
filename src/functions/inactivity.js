@@ -17,16 +17,16 @@ async function checkInactiveUsers(client) {
       if (!blacklistedUser) {
         // Check if user is in the list
         const activeUser = activeUsers.find(
-          (user) => user.id === message.author.id
+            (user) => user.id === message.author.id
         );
         if (activeUser) {
           // if they are in the list update the message date
           activeUser.messageDate = Date.now();
           // update the database with the new message date
           await inactiveDB.findOneAndUpdate(
-            { userId: message.author.id },
-            { lastMessageDate: new Date(activeUser.messageDate) },
-            { upsert: true }
+              { userId: message.author.id },
+              { lastMessageDate: new Date(activeUser.messageDate) },
+              { upsert: true }
           );
         } else {
           // if they are not in the list add the users id and the message date
@@ -45,7 +45,7 @@ async function checkInactiveUsers(client) {
 function getInactiveUsers() {
   const currentTime = Date.now();
 // 10 second timer
-const inactivityTimer = 10 * 1000;
+  const inactivityTimer = 10 * 1000;
 // 1 minute timer
 //const inactivityTimer = 1 * 60 * 1000;
 
@@ -63,7 +63,7 @@ const inactivityTimer = 10 * 1000;
 
 // filters users who have exceded the inactivity timer
   return activeUsers.filter(
-    (user) => currentTime - user.messageDate > inactivityTimer
+      (user) => currentTime - user.messageDate > inactivityTimer
   );
 }
 

@@ -9,7 +9,7 @@ const { eventNames } = require('process');
 //Guild == Server
 //Client == Bot
 
- global.client = new Client({
+global.client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMembers,
@@ -53,13 +53,13 @@ client.on('ready', (clientInstance) =>{
     (async()=> {
         try {
             await mongoose.connect(process.env.databaseToken);
-        console.log("Connected to DB");
+            console.log("Connected to DB");
         } catch (error) {
             console.log(`Error: ${error}`);
         }
-        })();
+    })();
 
-        checkInactiveUsers(client);
+    checkInactiveUsers(client);
 });
 
 
