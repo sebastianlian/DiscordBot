@@ -1,37 +1,31 @@
-const inactivitySchema = require("../models/inactivitySchema");
+const Inactivity = require('../models/inactivitySchema');
 
-async function addInactivityDB(userid, messageDate){
-    const doc = await inactivitySchema.inactiveDB.findOne();
-    if(doc){
-        try {
-            // Check if the user already exists in the database
-            let user = await inactivitySchema.inactiveDB.findOne({ userId });
+async function addInactivityDB(userId, userName, lastMessageDate) {
+    // Debugging log to check values before saving
+    console.log('Adding/updating inactivity data for:', { userId, userName, lastMessageDate });
 
-            if (!user) {
-                // If the user doesn't exist, create a new user document
-                user = new Inactivity({
-                    userId,
-                    lastMessageDate: messageDate,
-                });
-            } else {
-                // If the user already exists, update the lastMessageDate
-                user.lastMessageDate = messageDate;
-            }
-
-            // Save the user document to the database
-            await user.save();
-
-            console.log(`Inactivity data added for user ${userId}`);
-        } catch (error) {
-            console.error('Error adding inactivity data:', error);
-        }
+    // Validation check
+    if (!userId || !userName || !lastMessageDate) {
+        console.error('Error: Missing required fields.');
+        return;
     }
-    else{
-        await inactivitySchema.inactiveDB.create({ userId, lastMessageDate: messageDate });
-        console.log(`New Schema has been created with ${userId} as the first value.`);
+
+    try {
+        // Create or update the inactivity data
+        const filter = { userId: userId }; // Use userId to find existing record
+        const update = {
+            userName: userName,
+            lastMessageDate: lastMessageDate,
+        };
+        const options = { upsert: true, new: true }; // Upsert option to create if not exists
+
+        const inactivityData = await Inactivity.findOneAndUpdate(filter, update, options);
+        console.log('Inactivity data added/updated successfully:', inactivityData);
+    } catch (error) {
+        console.error('Error adding/updating inactivity data:', error);
     }
 }
 
 module.exports = {
     addInactivityDB
-}
+};

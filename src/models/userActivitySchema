@@ -20,7 +20,9 @@ const userActivitySchema = new mongoose.Schema({
     lastActive: {
         type: Date,
         required: true
-    }
+    },
 });
+
+const UserActivity = mongoose.model('UserActivity', userActivitySchema);
 
 module.exports = mongoose.model('UserActivity', userActivitySchema);

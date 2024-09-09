@@ -2,6 +2,8 @@ const { ChannelType } = require('discord.js');
 const Channel = require('../models/channelSchema'); // adjust your path accordingly
 const UserActivity = require('../models/userActivitySchema'); // schema to store user activity
 
+let userActivitiesCache = {}; // Cache to store user activities temporarily
+
 // function to store channels and user activities in the database
 async function storeChannels(client) {
     try {
@@ -10,7 +12,8 @@ async function storeChannels(client) {
 
         for (const channel of channels.values()) {
             if (channel.type === ChannelType.GuildText || channel.type === ChannelType.GuildVoice) {
-                // store the channel info in the database
+                // console.log(`Processing channel: ${channel.name} (${channel.id})`);
+
                 await Channel.findOneAndUpdate(
                     { id: channel.id },
                     {
@@ -21,11 +24,8 @@ async function storeChannels(client) {
                     { upsert: true }
                 );
 
-                // loop through each message in the text channel to get initial user activities
-                //TODO: create a loop to iterate through each message  for voice channels to get initial user activities
                 if (channel.type === ChannelType.GuildText) {
                     const messages = await channel.messages.fetch({ limit: 100 });
-
                     const userActivities = {};
 
                     for (const [messageId, message] of messages) {
@@ -38,7 +38,6 @@ async function storeChannels(client) {
                                 lastActive: message.createdAt
                             };
                         } else {
-                            // update only if the message is more recent
                             if (message.createdAt > userActivities[user.id].lastActive) {
                                 userActivities[user.id].lastMessage = message.content;
                                 userActivities[user.id].lastActive = message.createdAt;
@@ -46,7 +45,8 @@ async function storeChannels(client) {
                         }
                     }
 
-                    // update the database with the most recent message and timestamp for each user
+                    // console.log(`User activities for channel ${channel.name}:`, userActivities);
+
                     for (const [userId, activity] of Object.entries(userActivities)) {
                         await UserActivity.findOneAndUpdate(
                             { userId: userId, channelName: channel.name },
@@ -57,7 +57,11 @@ async function storeChannels(client) {
                             },
                             { upsert: true, new: true }
                         );
+
+                        userActivitiesCache[userId] = activity;
                     }
+
+                    // console.log(`Cached user activities after processing channel ${channel.name}:`, userActivitiesCache);
                 }
             }
         }
@@ -68,6 +72,13 @@ async function storeChannels(client) {
     }
 }
 
+// Function to get cached user activities
+function getUserActivities() {
+    // console.log('Current User Activities Cache:', userActivitiesCache);
+    return userActivitiesCache;
+}
+
 module.exports = {
     storeChannels,
+    getUserActivities,
 };

@@ -1,6 +1,8 @@
 require('dotenv').config();
 const { Client, IntentsBitField, Collection } = require('discord.js');
 const {storeChannels } = require('./functions/channelManager'); // Adjust the path accordingly
+const {getUserActivities} = require('./functions/channelManager');
+const {addInactivityDB} = require("./functions/addInactiveUser");
 const fs = require('fs');
 const mongoose = require('mongoose');
 
@@ -43,20 +45,32 @@ for (const file of eventFiles) {
 }
 
 // Bot ready event
-client.on('ready', (clientInstance) =>{
+client.on('ready', async (clientInstance) => {
     console.log(chalk.yellow(`⚡ ${clientInstance.user.tag} ⚡ is online.`));
-//Connects the mongodb database to the code
-    (async()=> {
-        try {
-            await mongoose.connect(process.env.databaseToken);
-            console.log(chalk.green("Connected to DB"));
-        } catch (error) {
-            console.log(chalk.red('DB is disconnected'));
-        }
-    })();
+    // Connect to MongoDB
+    try {
+        await mongoose.connect(process.env.databaseToken);
+        console.log(chalk.green("Connected to DB"));
+    } catch (error) {
+        console.log(chalk.red('DB is disconnected'));
+    }
 
     // Store channels in the database
-     storeChannels(client);
+    await storeChannels(client);
+
+    // Await the result of getUserActivities and pass it to addInactivityDB
+    const userActivities = getUserActivities();
+    console.log('Cached User Activities:', userActivities);
+
+    // Add/update user activities in the inactivity DB
+    for (const [userId, activity] of Object.entries(userActivities)) {
+        console.log('Adding user to inactivity DB:', {
+            userId: userId,
+            userName: activity.username,
+            lastMessageDate: activity.lastActive
+        });
+        await addInactivityDB(userId, activity.username, activity.lastActive);
+    }
 });
 
 client.login(process.env.TOKEN);
