@@ -3,6 +3,8 @@ const { Client, IntentsBitField, Collection } = require('discord.js');
 const {storeChannels } = require('./functions/channelManager'); // Adjust the path accordingly
 const {getUserActivities} = require('./functions/channelManager');
 const {addInactivityDB} = require("./functions/addInactiveUser");
+const { checkInactiveUsers } = require('./functions/inactivity');
+const { activeUsers } = require ("./functions/inactivity");
 const fs = require('fs');
 const mongoose = require('mongoose');
 
@@ -71,6 +73,9 @@ client.on('ready', async (clientInstance) => {
         });
         await addInactivityDB(userId, activity.username, activity.lastActive);
     }
+    // Check inactive users and log active users
+    await checkInactiveUsers(client); // Call to checkInactiveUsers
+    console.log('Active Users:', activeUsers); // Log the activeUsers
 });
 
 client.login(process.env.TOKEN);

@@ -1,5 +1,5 @@
 const { blackListDB } = require('../models/blacklistSchema');
-const { inactiveDB } = require('../models/inactivitySchema');
+const { Inactivity } = require('../models/inactivitySchema');
 const { getUserActivities } = require('./channelManager');
 const { addInactivityDB } = require("./addInactiveUser");
 
@@ -24,10 +24,10 @@ async function checkInactiveUsers(client) {
             activeUsers.push({ id: message.author.id, messageDate: currentTime });
           }
 
-          await inactiveDB.findOneAndUpdate(
+          await Inactivity.findOneAndUpdate(
               { userId: message.author.id },
               { lastMessageDate: new Date(currentTime) },
-              { upsert: true }
+              { upsert: true, new: true}
           );
 
           console.log('Active users after processing message:', activeUsers);
