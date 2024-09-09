@@ -1,14 +1,12 @@
 require('dotenv').config();
 const { Client, IntentsBitField, Collection } = require('discord.js');
-const {storeChannels } = require('./functions/channelManager'); // Adjust the path accordingly
-const {getUserActivities} = require('./functions/channelManager');
-const {addInactivityDB} = require("./functions/addInactiveUser");
-const { checkInactiveUsers } = require('./functions/inactivity');
-const { activeUsers } = require ("./functions/inactivity");
+const { storeChannels, getUserActivities } = require('./functions/channelManager'); // Adjust the path accordingly
+const { addInactivityDB } = require("./functions/addInactiveUser");
+const { activeUsers, checkInactiveUsers } = require ("./functions/inactivity");
 const fs = require('fs');
 const mongoose = require('mongoose');
 
-// Dynamic import for chalk
+// Dynamic import for chalk colors in terminal
 let chalk;
 (async () => {
     chalk = (await import('chalk')).default;
