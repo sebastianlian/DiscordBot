@@ -1,37 +1,37 @@
-const inactivitySchema = require("../models/inactivitySchema");
+const Inactivity = require('../models/inactivitySchema');
 
-async function addInactivityDB(userid, messageDate){
-    const doc = await inactivitySchema.inactiveDB.findOne();
-    if(doc){
-        try {
-            // Check if the user already exists in the database
-            let user = await inactivitySchema.inactiveDB.findOne({ userId });
-    
-            if (!user) {
-                // If the user doesn't exist, create a new user document
-                user = new Inactivity({
-                    userId,
-                    lastMessageDate: messageDate,
-                });
-            } else {
-                // If the user already exists, update the lastMessageDate
-                user.lastMessageDate = messageDate;
-            }
-    
-            // Save the user document to the database
-            await user.save();
-    
-            console.log(`Inactivity data added for user ${userId}`);
-        } catch (error) {
-            console.error('Error adding inactivity data:', error);
-        }
+// Function to add or update inactivity data in the database
+async function addInactivityDB(userId, userName, lastMessageDate) {
+    // debugging log to check values before saving
+    console.log('Adding/updating inactivity data for:', { userId, userName, lastMessageDate });
+
+    // Basic validation to ensure required fields are provided
+    if (!userId || !userName || !lastMessageDate) {
+        console.error('Error: Missing required fields.');
+        return;
     }
-    else{
-        await inactivitySchema.inactiveDB.create({ userId, lastMessageDate: messageDate });
-        console.log(`New Schema has been created with ${userId} as the first value.`);
+
+    try {
+        // Create a filter to find an existing record by userId
+        const filter = { userId: userId };
+
+        // Define the update object with the provided userName and lastMessageDate
+        const update = {
+            userName: userName,
+            lastMessageDate: lastMessageDate,
+        };
+
+        // If the record exists, it will update it; if not, it will create a new one
+        const options = { upsert: true, new: true };
+
+        // Perform the database operation to either update or create a new record
+        const inactivityData = await Inactivity.findOneAndUpdate(filter, update, options);
+        console.log('Inactivity data added/updated successfully:', inactivityData);
+    } catch (error) {
+        console.error('Error adding/updating inactivity data:', error);
     }
 }
 
 module.exports = {
     addInactivityDB
-}
+};

@@ -1,42 +1,56 @@
+// Load environment variables from a .env file into process.env
 require('dotenv').config();
-const { Client, IntentsBitField, Collection, ApplicationCommandType, Events, MessageButton, MessageActionRow } = require("discord.js");
-const { checkInactiveUsers, activeMembers } = require('../src/functions/inactivity.js');
-const fs = require("fs");
+
+// Import necessary modules from discord.js
+const { Client, IntentsBitField, Collection } = require('discord.js');
+
+// Import custom functions for channel management, inactivity database, and activity checks
+const { storeChannels, getUserActivities } = require('./functions/channelManager'); // Adjust the path accordingly
+const { addInactivityDB } = require("./functions/addInactiveUser");
+const { activeUsers, checkInactiveUsers } = require ("./functions/inactivity");
+
+// Import Node.js filesystem module for file operations
+const fs = require('fs');
 const mongoose = require('mongoose');
-const { eventNames } = require('process');
 
-//These are the diffrent permissions the bot is allowed to get access to
-//Guild == Server
-//Client == Bot
+// Dynamically import chalk for colored terminal output
+let chalk;
+(async () => {
+    chalk = (await import('chalk')).default;
+})();
 
- global.client = new Client({
+// Create a new Discord client instance with specified intents
+global.client = new Client({
     intents: [
-        IntentsBitField.Flags.Guilds,
-        IntentsBitField.Flags.GuildMembers,
-        IntentsBitField.Flags.GuildMessages,
-        IntentsBitField.Flags.MessageContent
+        IntentsBitField.Flags.Guilds, // Required to receive guild events
+        IntentsBitField.Flags.GuildMessages, // Required to receive message events
+        IntentsBitField.Flags.MessageContent // Required to access message content
     ]
 });
 
-//Reads the commands folder and checks for any files that end with .js
-const commandFiles = fs.readdirSync("commands").filter(file => file.endsWith(".js"));
-
-const commands = [];
-
+// Initialize a Collection for storing commands
 client.commands = new Collection();
 
+// Read all command files from the "commands" directory
+const commandFiles = fs.readdirSync("commands").filter(file => file.endsWith(".js"));
+
+// Array to hold command data
+const commands = [];
+
+// Loop through each command file
 for (const file of commandFiles) {
+    // Require the command file and extract command data
     const command = require(`./commands/${file}`);
     commands.push(command.data.toJSON());
     client.commands.set(command.data.name, command);
 }
 
-//Reads the events folder and checks for any files that end with .js
+// Read all event files from the "events" directory
 const eventFiles = fs.readdirSync("events").filter(file => file.endsWith(".js"));
 
+// Loop through each event file
 for (const file of eventFiles) {
     const events = require(`./events/${file}`);
-
     if (events.once) {
         client.once(events.name, (...args) => events.execute(...args, commands));
     } else {
@@ -44,40 +58,38 @@ for (const file of eventFiles) {
     }
 }
 
-// Makes the bot send a message with its tag name
-// identifiying that it is online and ready in the VS console.
+// Event handler for when the bot is ready
+client.on('ready', async (clientInstance) => {
+    console.log(chalk.yellow(`⚡ ${clientInstance.user.tag} ⚡ is online.`));
+    // Connect to MongoDB
+    try {
+        await mongoose.connect(process.env.databaseToken);
+        console.log(chalk.green("Connected to DB"));
+    } catch (error) {
+        console.log(chalk.red('DB is disconnected'));
+    }
 
-client.on('ready', (clientInstance) =>{
-    console.log(`⚡ ${clientInstance.user.tag} ⚡ is online.`);
-//Connects the mongodb database to the code
-    (async()=> {
-        try {
-            await mongoose.connect(process.env.databaseToken);
-        console.log("Connected to DB");
-        } catch (error) {
-            console.log(`Error: ${error}`);
-        }
-        })();
+    // Call storeChannels to save channel information in the database - (channels)
+    await storeChannels(client);
 
-        checkInactiveUsers(client);
+    // Await the result of getUserActivities and pass it to addInactivityDB
+    const userActivities = getUserActivities();
+    console.log('Cached User Activities:', userActivities);
+
+    // Add/update user activities in the inactivity DB
+    for (const [userId, activity] of Object.entries(userActivities)) {
+        console.log('Adding user to inactivity DB:', {
+            userId: userId,
+            userName: activity.username,
+            lastMessageDate: activity.lastActive
+        });
+        // Add or update user activity in the inactivity database
+        await addInactivityDB(userId, activity.username, activity.lastActive);
+    }
+    // Check inactive users and log active users
+    await checkInactiveUsers(client); // Call to checkInactiveUsers
+    console.log('Active Users:', activeUsers); // Log the activeUsers
 });
 
-
-//1.) The Token for the bot is found in the
-// ".env" file so that the Token is more secure when
-// publishing to git becasue the ".gitignore" file is ignoring the ".env" file.
-// The ".env" file contains only one line which is ***TOKEN = bot_token***
-// Due to this being a GitHub group project the ".env" file will not be added to the ".gitignore" file
-// for transparency.
-
-
-console.log('Discord Token:', process.env.TOKEN); // Debug line
-
+// Log in to Discord using the token from environment variables
 client.login(process.env.TOKEN);
-
-//2.) By using the Node.js Terminal command ***nodemon*** or ***nodemon src/index.js***
-// you should be able to start up the bot if you enter ***ctrl + c*** it will turn off.
-
-//3.) In the "package.json" file you will find that the reason
-// why you only have to type in nodemon is becasue the script
-// location is already specified in "main:".
