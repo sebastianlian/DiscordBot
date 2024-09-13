@@ -1,131 +1,125 @@
-const { getUserActivities } = require('./channelManager'); // Adjust the path accordingly
+const { getUserActivities } = require('./channelManager');
 const { blackListDB } = require("../models/blacklistSchema");
 const { inactiveDB } = require("../models/inactivitySchema");
+const { getChalk } = require('../utility/utils'); // Adjust the path accordingly
+
+const INACTIVITY_TIMER = 10 * 1000; // 10 seconds, adjust as needed
 const activeUsers = [];
 
-// Function to add inactivity data to the database
-async function addInactivityDB(userId, userName, lastActive) {
+// Function to add/update inactivity data in the database
+async function addOrUpdateInactivityDB(userId, userName, lastActive) {
+  const chalk = getChalk(); // Get the chalk instance
   try {
     const messageDate = new Date(lastActive);
 
-    // Ensure userName is provided and valid
     if (!userName) {
       throw new Error('userName is required');
     }
 
-    // Create a new document in the database
-    await inactiveDB.create({
-      userId,
-      userName,
-      lastMessageDate: messageDate
-    });
-    console.log(`User ${userName} (${userId}) added to inactivity database.`);
-
-    // Optional: Use getInactiveUsers if needed
-    const inactiveUsersMap = getInactiveUsers();
-    console.log('Current inactive users:', inactiveUsersMap);
-    console.log('Inactive User Map: ', inactiveUsersMap);
+    await inactiveDB.findOneAndUpdate(
+        { userId },
+        { userName, lastMessageDate: messageDate },
+        { upsert: true }
+    );
+    console.log(`User ${userName} (${userId}) updated in inactivity database.`);
   } catch (error) {
-    console.error('Error adding inactivity data:', error);
+    console.error('Error updating inactivity data:', error);
   }
 }
 
-async function checkInactiveUsers(client) {
-  client.on("messageCreate", async (message) => {
-    if (!mongoose.connection.collections["inactiveusers"]) {
-      // If the database doesn't exist, create it
-      mongoose.connection.createCollection("inactiveusers");
+// Function to remove a user from the inactivity database
+async function removeFromInactivityDB(userId) {
+  const chalk = getChalk(); // Get the chalk instance
+  try {
+    const result = await inactiveDB.deleteOne({ userId });
+
+    if (result.deletedCount === 0) {
+      console.log(chalk.red(`User ${userId} not found in inactivity database or could not be deleted.`));
+    } else {
+      console.log(chalk.green(`User ${userId} successfully removed from inactivity database.`));
     }
+  } catch (error) {
+    console.error(chalk.red('Error removing user from inactivity database:', error));
+  }
+}
+
+// Function to check for inactive users
+async function checkAndUpdateInactiveUsers() {
+  const userActivitiesMap = getUserActivities();
+  const currentTime = Date.now();
+  const chalk = getChalk();
+
+  console.log(chalk.bgYellow.black('Starting inactivity database update...'));
+
+  for (const [userId, activity] of userActivitiesMap.entries()) {
+    if (currentTime - activity.lastActive > INACTIVITY_TIMER) {
+      // User is considered inactive, update database
+      await addOrUpdateInactivityDB(userId, activity.userName, activity.lastActive);
+    }
+  }
+
+  // Also check the activeUsers array
+  for (const user of activeUsers) {
+    if (currentTime - user.messageDate > INACTIVITY_TIMER) {
+      console.log(`User ${user.id} is inactive.`);
+      await addOrUpdateInactivityDB(user.id, user.userName, user.messageDate);
+    }
+  }
+}
+
+// Function to check and return inactive users (for logging or usage elsewhere)
+function getInactiveUsers() {
+  const currentTime = Date.now();
+  const inactiveUsersMap = new Map();
+
+  activeUsers.forEach(user => {
+    if (currentTime - user.messageDate > INACTIVITY_TIMER) {
+      inactiveUsersMap.set(user.id, {
+        lastMessageDate: new Date(user.messageDate)
+      });
+    }
+  });
+
+  console.log("Inactive User Map: ", inactiveUsersMap);
+  return inactiveUsersMap;
+}
+
+// Event listener for message creation (tracks user activity)
+async function trackUserActivity(client) {
+  client.on("messageCreate", async (message) => {
     if (!message.author.bot) {
       const blacklistedUser = await blackListDB.findOne({
         blackListedUsers: message.author.id,
       });
 
       if (!blacklistedUser) {
-        // Check if user is in the list
-        const activeUser = activeUsers.find(
-            (user) => user.id === message.author.id
-        );
+        let activeUser = activeUsers.find(user => user.id === message.author.id);
+
+        // Check if the user exists in the inactivity database
+        const userInInactiveDB = await inactiveDB.findOne({ userId: message.author.id });
+
+        if (userInInactiveDB) {
+          // If user is in inactivity DB, remove them
+          console.log(`User ${message.author.id} found in inactivityDB. Removing them...`);
+          await removeFromInactivityDB(message.author.id);
+        }
+
         if (activeUser) {
-          // if they are in the list update the message date
+          // Update existing user's activity
           activeUser.messageDate = Date.now();
-          // update the database with the new message date
-          await inactiveDB.findOneAndUpdate(
-              { userId: message.author.id },
-              { lastMessageDate: new Date(activeUser.messageDate) },
-              { upsert: true }
-          );
+          await addOrUpdateInactivityDB(message.author.id, message.author.username, activeUser.messageDate);
         } else {
-          // if they are not in the list add the users id and the message date
-          activeUsers.push({ id: message.author.id, messageDate: Date.now() });
-          // add the user to the database
-          await inactiveDB.create({
-            userId: message.author.id,
-            lastMessageDate: new Date(Date.now()),
-          });
+          // Add new user to activeUsers
+          activeUsers.push({ id: message.author.id, messageDate: Date.now(), userName: message.author.username });
+          await addOrUpdateInactivityDB(message.author.id, message.author.username, Date.now());
         }
       }
     }
   });
 }
 
-// Function to check inactive users using userActivitiesMap
-async function checkAndUpdateInactiveUsers() {
-  const userActivitiesMap = getUserActivities();
-  const currentTime = Date.now();
-
-  // console.log('in checkAndUpdateInactiveUsers loop', getUserActivities()); // Debugging to see current activities
-
-  // Define your inactivity threshold here
-  const inactivityTimer = 10 * 1000; // 10 seconds, adjust as needed
-
-  for (const [userId, activity] of userActivitiesMap.entries()) {
-    if (currentTime - activity.lastActive > inactivityTimer) {
-      // User is considered inactive
-      await addInactivityDB(userId, activity.userName, activity.lastActive);
-    }
-  }
-}
-
-function getInactiveUsers() {
-  const currentTime = Date.now();
-// 10 second timer
-  const inactivityTimer = 10 * 1000;
-// 1 minute timer
-//const inactivityTimer = 1 * 60 * 1000;
-
-// 1 hour timer
-//const inactivityTimer = 1 * 60 * 60 * 1000;
-
-// 1 day timer
-//const inactivityTimer = 24 * 60 * 60 * 1000;
-
-// 1 week timer
-//const inactivityTimer = 7 * 24 * 60 * 60 * 1000;
-
-// 1 month timer
-//const inactivityTimer = 4 * 7 * 24 * 60 * 60 * 1000;
-
-// Create a new Map to store inactive users
-  const inactiveUsersMap = new Map();
-
-  // Filter activeUsers based on the inactivity timer
-  activeUsers.forEach(user => {
-    if (currentTime - user.messageDate > inactivityTimer) {
-      // If user is inactive, add to the Map
-      inactiveUsersMap.set(user.name, {
-        lastMessageDate: user.messageDate
-      });
-    }
-  });
-
-  return inactiveUsersMap;
-}
-
 module.exports = {
-  checkInactiveUsers,
-  getInactiveUsers,
   checkAndUpdateInactiveUsers,
-  addInactivityDB, // Export addInactivityDB if needed elsewhere
-  activeUsers,
+  getInactiveUsers,
+  trackUserActivity,
 };

@@ -2,12 +2,15 @@
 const { ChannelType } = require('discord.js');
 const Channel = require('../models/channelSchema'); // Adjust your path accordingly
 const UserActivity = require('../models/userActivitySchema'); // Adjust your path accordingly
+const { getChalk } = require('../utility/utils'); // Adjust the path accordingly
 
 // Create a Map to store user activities
 let userActivitiesMap = new Map();
 
 // Function to store channels and user activities in the database
 async function storeChannels(client) {
+    const chalk = getChalk(); // Get the chalk instance
+
     try {
         // Fetch the guild using the GUILD_ID from the environment variables
         const guild = await client.guilds.fetch(process.env.GUILD_ID);
@@ -36,13 +39,13 @@ async function storeChannels(client) {
             }
         }
 
-        console.log("Channels and user activities stored in DB.");
+        console.log(chalk.green("Channels and user activities stored in DB."));
 
         // Now handle voice channel tracking
         trackVoiceChannelActivity(client);
 
     } catch (error) {
-        console.error('Error storing channels or user activity', error);
+        console.error(chalk.red('Error storing channels or user activity'), error);
     }
 }
 
@@ -87,7 +90,9 @@ async function trackAndLogTextChannelActivity(channel) {
 
 // Function to track voice channel activity in real time
 function trackVoiceChannelActivity(client) {
-    console.log('Starting voice activity detection...');
+    const chalk = getChalk(); // Get the chalk instance
+
+    console.log(chalk.bgYellow.black('Starting voice activity detection...'));
 
     client.on('voiceStateUpdate', async (oldState, newState) => {
         try {
@@ -112,14 +117,16 @@ function trackVoiceChannelActivity(client) {
                 }
             }
         } catch (error) {
-            console.error('Error tracking voice activity:', error);
+            console.error(chalk.red('Error tracking voice activity:'), error);
         }
     });
 }
 
 // Updates lastActive with lastVoiceActivity if there is activity
 async function logVoiceActivity(userId, userName, channelName, action) {
-    console.log('Ready to detect voice activity...');
+    const chalk = getChalk(); // Get the chalk instance
+
+    // console.log('Ready to detect voice activity...');
     try {
         const currentDate = new Date(); // Define currentDate here
         await UserActivity.findOneAndUpdate(
@@ -142,9 +149,9 @@ async function logVoiceActivity(userId, userName, channelName, action) {
         currentActivity.lastActive = currentDate;
         userActivitiesMap.set(userId, currentActivity);
 
-        console.log(`Voice activity logged for user: ${userName} - ${action}`);
+        console.log(chalk.magentaBright(`Voice activity logged for user: ${userName} - ${action}`));
     } catch (error) {
-        console.error('Error logging voice activity:', error);
+        console.error(chalk.red('Error logging voice activity:'), error);
     }
 }
 

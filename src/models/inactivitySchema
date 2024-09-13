@@ -13,10 +13,6 @@ const inactivitySchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  lastVoiceActivity: {
-      type: Date, // Add this to track voice activity
-      default: null,
-    }
 });
 
 
