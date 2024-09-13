@@ -1,0 +1,30 @@
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+// Define the Channel schema
+const channelSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  type: {
+    type: String,
+    enum: ['text', 'voice', 'category'],
+    required: true
+  },
+  id: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  createdAt: {
+    type: Date,
+    required: true
+  }
+});
+
+// Create a model from the schema
+const Channel = mongoose.model('Channel', channelSchema);
+
+module.exports = Channel;
