@@ -13,9 +13,15 @@ const inactivitySchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  lastVoiceActivity: {
+      type: Date, // Add this to track voice activity
+      default: null,
+    }
 });
 
 
-const Inactivity = mongoose.model("InactiveUser", inactivitySchema);
+const inactiveDB = mongoose.model("InactiveUser", inactivitySchema);
 
-module.exports = Inactivity;
+module.exports = {
+    inactiveDB
+};
