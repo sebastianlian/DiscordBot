@@ -2,29 +2,28 @@
 require('dotenv').config();
 
 // Import necessary modules from discord.js
-const { Client, IntentsBitField, Collection } = require('discord.js');
+const { Client, IntentsBitField, GatewayIntentBits, Collection } = require('discord.js');
 
 // Import custom functions for channel management, inactivity database, and activity checks
 const { storeChannels, getUserActivities } = require('./functions/channelManager'); // Adjust the path accordingly
-const { addInactivityDB } = require("./functions/addInactiveUser");
+const { checkAndUpdateInactiveUsers } = require('./functions/inactivity'); // Adjust the path accordingly
 const { activeUsers, checkInactiveUsers } = require ("./functions/inactivity");
+const { getChalk } = require('./utility/utils');
 
 // Import Node.js filesystem module for file operations
 const fs = require('fs');
 const mongoose = require('mongoose');
 
-// Dynamically import chalk for colored terminal output
-let chalk;
-(async () => {
-    chalk = (await import('chalk')).default;
-})();
+
+
 
 // Create a new Discord client instance with specified intents
 global.client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds, // Required to receive guild events
         IntentsBitField.Flags.GuildMessages, // Required to receive message events
-        IntentsBitField.Flags.MessageContent // Required to access message content
+        IntentsBitField.Flags.MessageContent, // Required to access message content
+        GatewayIntentBits.GuildVoiceStates
     ]
 });
 
@@ -60,6 +59,7 @@ for (const file of eventFiles) {
 
 // Event handler for when the bot is ready
 client.on('ready', async (clientInstance) => {
+    const chalk = getChalk(); // Get the chalk instance
     console.log(chalk.yellow(`⚡ ${clientInstance.user.tag} ⚡ is online.`));
     // Connect to MongoDB
     try {
@@ -72,24 +72,13 @@ client.on('ready', async (clientInstance) => {
     // Call storeChannels to save channel information in the database - (channels)
     await storeChannels(client);
 
-    // Await the result of getUserActivities and pass it to addInactivityDB
-    const userActivities = getUserActivities();
-    console.log('Cached User Activities:', userActivities);
+    setInterval(() => {
+        checkAndUpdateInactiveUsers();
+    }, 15000); // Check every 15 secs, adjust as needed
 
-    // Add/update user activities in the inactivity DB
-    for (const [userId, activity] of Object.entries(userActivities)) {
-        console.log('Adding user to inactivity DB:', {
-            userId: userId,
-            userName: activity.username,
-            lastMessageDate: activity.lastActive
-        });
-        // Add or update user activity in the inactivity database
-        await addInactivityDB(userId, activity.username, activity.lastActive);
-    }
-    // Check inactive users and log active users
-    await checkInactiveUsers(client); // Call to checkInactiveUsers
-    console.log('Active Users:', activeUsers); // Log the activeUsers
+    // await checkAndUpdateInactiveUsers(client);
 });
+
 
 // Log in to Discord using the token from environment variables
 client.login(process.env.TOKEN);

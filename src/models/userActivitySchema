@@ -9,13 +9,17 @@ const userActivitySchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    username: {
+    userName: {
         type: String,
         required: true
     },
     lastMessage: {
         type: String,
-        required: true
+        default: ''
+    },
+    lastVoiceActivity: {
+        type: Date,
+        default: ''
     },
     lastActive: {
         type: Date,
