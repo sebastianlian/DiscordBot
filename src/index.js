@@ -32,7 +32,7 @@ global.client = new Client({
 client.commands = new Collection();
 
 // Read all command files from the "commands" directory
-const commandFiles = fs.readdirSync("src/commands").filter(file => file.endsWith(".js"));
+const commandFiles = fs.readdirSync("commands").filter(file => file.endsWith(".js"));
 
 // Array to hold command data
 const commands = [];
@@ -46,7 +46,7 @@ for (const file of commandFiles) {
 }
 
 // Read all event files from the "events" directory
-const eventFiles = fs.readdirSync("src/events").filter(file => file.endsWith(".js"));
+const eventFiles = fs.readdirSync("events").filter(file => file.endsWith(".js"));
 
 // Loop through each event file
 for (const file of eventFiles) {
