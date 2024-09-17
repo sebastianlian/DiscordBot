@@ -110,7 +110,11 @@ async function trackUserActivity(client) {
           await addOrUpdateInactivityDB(message.author.id, message.author.username, activeUser.messageDate);
         } else {
           // Add new user to activeUsers
-          activeUsers.push({ id: message.author.id, messageDate: Date.now(), userName: message.author.username });
+          activeUsers.push({
+            id: message.author.id,
+            messageDate: Date.now(),
+            userName: message.author.username
+          });
           await addOrUpdateInactivityDB(message.author.id, message.author.username, Date.now());
         }
       }
