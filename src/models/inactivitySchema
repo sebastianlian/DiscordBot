@@ -16,6 +16,8 @@ const inactivitySchema = new mongoose.Schema({
 });
 
 
-const Inactivity = mongoose.model("InactiveUser", inactivitySchema);
+const inactiveDB = mongoose.model("InactiveUser", inactivitySchema);
 
-module.exports = Inactivity;
+module.exports = {
+    inactiveDB
+};

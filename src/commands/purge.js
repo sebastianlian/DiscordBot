@@ -1,6 +1,10 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("@discordjs/builders");
 const { ButtonStyle, Embed, PermissionFlagsBits, MessageEmbed } = require("discord.js");
 const { checkInactiveUsers, getInactiveUsers, activeUsers } = require("../functions/inactivity");
+const PurgeHistory = require("../models/purgeHistorySchema");
+
+// Log the PurgeHistory model to the console for debugging
+console.log('PurgeHistory model:', PurgeHistory);
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -37,6 +41,7 @@ module.exports = {
 		collector.on("collect", async (buttonInteraction) => {
 			if (buttonInteraction.customId === "confirm") {
 				const inactiveUsers = getInactiveUsers();
+				let purgedCount = 0;
 
 				// goes through the list of users and gets id
 				for (const user of inactiveUsers) {
@@ -44,17 +49,30 @@ module.exports = {
 
 					if (member) {
 						try {
-							// kicks members who are in the list
+							// kicks members who are in the list and updates the purged count
 							await member.kick("Inactive user purge");
+							purgedCount++;
 						} catch (error) {
 							console.error(`Error kicking user ${user.id}: ${error}`);
 						}
 					}
 				}
 
+				//Log record of purge to database
+				try{
+					await PurgeHistory.create({
+						userId: interaction.user.id,
+						username: interaction.user.username,
+						executionDate: new Date(),
+						purgedCount: purgedCount,
+					});
+				} catch (error) {
+					console.error(`Error logging purge to database: ${error}`);
+				}
+
 				const confirmEmbed = new EmbedBuilder()
 					.setTitle("Purge Confirmed")
-					.setDescription("Removing inactive users...")
+					.setDescription("Removed $[purgedCount] inactive users.")
 					.setColor(0x2ECC71);
 
 				await buttonInteraction.update({
