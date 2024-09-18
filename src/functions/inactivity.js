@@ -110,11 +110,11 @@ async function getInactiveUsers() {
     });
 
     console.log("Inactive User Map:", inactiveUsersMap);
+    return inactiveUsersMap; // Ensure it returns the map
   } catch (error) {
     console.error('Error retrieving inactive users:', error);
+    return new Map();
   }
-
-  return inactiveUsersMap;
 }
 
 // Main Operations

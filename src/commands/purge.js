@@ -4,7 +4,7 @@ const { checkInactiveUsers, getInactiveUsers, activeUsers } = require("../functi
 const PurgeHistory = require("../models/purgeHistorySchema");
 
 // Log the PurgeHistory model to the console for debugging
-console.log('PurgeHistory model:', PurgeHistory);
+// console.log('PurgeHistory model:', PurgeHistory);
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -14,7 +14,7 @@ module.exports = {
 	
     async execute(interaction) {
 		const embed = new EmbedBuilder()
-        	.setTitle("Purge Confrimation")
+        	.setTitle("Purge Confirmation")
         	.setDescription("Would you like to continue with the purge?")
         	.setColor(0x0099FF)
 
@@ -40,12 +40,19 @@ module.exports = {
 
 		collector.on("collect", async (buttonInteraction) => {
 			if (buttonInteraction.customId === "confirm") {
-				const inactiveUsers = getInactiveUsers();
+				const inactiveUsers = await getInactiveUsers(); // Await the function
+				console.log("Inactive Users:", inactiveUsers);
+
+				if (!(inactiveUsers instanceof Map)) {
+					console.error("Error: inactiveUsers is not a Map");
+					return;
+				}
+
 				let purgedCount = 0;
 
 				// goes through the list of users and gets id
-				for (const user of inactiveUsers) {
-					const member = interaction.guild.members.cache.get(user.id);
+				for (const [userId, userInfo] of inactiveUsers.entries()) { // Iterate over the Map
+					const member = interaction.guild.members.cache.get(userId);
 
 					if (member) {
 						try {
