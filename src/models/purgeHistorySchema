@@ -9,4 +9,4 @@ const purgeHistorySchema = new mongoose.Schema({
 
 const PurgeHistory = mongoose.model('PurgeHistory', purgeHistorySchema);
 
-module.exports = { PurgeHistory };
+module.exports = PurgeHistory;
