@@ -5,9 +5,8 @@ require('dotenv').config();
 const { Client, IntentsBitField, GatewayIntentBits, Collection } = require('discord.js');
 
 // Import custom functions for channel management, inactivity database, and activity checks
-const { storeChannels, getUserActivities } = require('./functions/channelManager'); // Adjust the path accordingly
-const { checkAndUpdateInactiveUsers } = require('./functions/inactivity'); // Adjust the path accordingly
-const { activeUsers, checkInactiveUsers } = require ("./functions/inactivity");
+const { storeChannels } = require('./functions/channelManager'); // Adjust the path accordingly
+const { checkAndUpdateInactiveUsers, logActiveUsersMap, trackUserActivity } = require('./functions/inactivity'); // Adjust the path accordingly
 const { getChalk } = require('./utility/utils');
 
 // Import Node.js filesystem module for file operations
@@ -74,7 +73,8 @@ client.on('ready', async (clientInstance) => {
 
     setInterval(() => {
         checkAndUpdateInactiveUsers();
-    }, 15000); // Check every 15 secs, adjust as needed
+        trackUserActivity(clientInstance);
+    }, 20000); // Check every 20 secs, adjust as needed
 
     // await checkAndUpdateInactiveUsers(client);
 });

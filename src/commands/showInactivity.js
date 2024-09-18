@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("@discordjs/builders");
 const { PermissionFlagsBits } = require("discord.js");
-const { checkInactiveUsers, getInactiveUsers, activeUsers } = require("../functions/inactivity");
+const { getInactiveUsers } = require("../functions/inactivity");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,31 +9,33 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
+        try {
+            const inactiveUsers = await getInactiveUsers(); // Ensure to await the function
 
-        const inactiveUsers = getInactiveUsers();
+            if (!(inactiveUsers instanceof Map)) {
+                throw new Error('Expected a Map from getInactiveUsers');
+            }
 
-        let userList = "";
-        for (const user of inactiveUsers) {
-            userList += `<@${user.id}>\n`;
-        }
+            // console.log("Inactive users length:", inactiveUsers.size);
 
-        if (userList.length > 0) {
+            let userList = "";
+            for (const [userId, userInfo] of inactiveUsers.entries()) {
+                const lastActiveDate = new Date(userInfo.lastMessageDate).toLocaleString(); // Format the date
+                userList += `<@${userId}> - Last active: ${lastActiveDate}\n`;            }
+
             const embed = new EmbedBuilder()
-                .setTitle("Inactive Members")
-                .setDescription(userList)
-                .setColor(0xff0000);
+                .setTitle(inactiveUsers.size > 0 ? "Inactive Members" : "No Inactive Users")
+                .setDescription(userList || "No inactive users found.")
+                .setColor(inactiveUsers.size > 0 ? 0xff0000 : 0x0099FF);
 
-            interaction.reply({
+            await interaction.reply({
                 embeds: [embed],
                 ephemeral: true,
             });
-        } else {
-            const embed = new EmbedBuilder()
-                .setTitle("No Inactive Users")
-                .setColor(0x0099FF);
-
-            interaction.reply({
-                embeds: [embed],
+        } catch (error) {
+            console.error('Error executing /showinactivity command:', error);
+            await interaction.reply({
+                content: 'There was an error while executing this command.',
                 ephemeral: true,
             });
         }
