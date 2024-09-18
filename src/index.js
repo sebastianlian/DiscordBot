@@ -13,9 +13,6 @@ const { getChalk } = require('./utility/utils');
 const fs = require('fs');
 const mongoose = require('mongoose');
 
-
-
-
 // Create a new Discord client instance with specified intents
 global.client = new Client({
     intents: [
@@ -71,14 +68,12 @@ client.on('ready', async (clientInstance) => {
     // Call storeChannels to save channel information in the database - (channels)
     await storeChannels(client);
 
+    // DO NOT DELETE OR REMOVE ANY FUNCTION CALLS
     setInterval(() => {
         checkAndUpdateInactiveUsers();
         trackUserActivity(clientInstance);
     }, 20000); // Check every 20 secs, adjust as needed
-
-    // await checkAndUpdateInactiveUsers(client);
 });
-
 
 // Log in to Discord using the token from environment variables
 client.login(process.env.TOKEN);
