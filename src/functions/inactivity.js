@@ -119,7 +119,7 @@ async function getInactiveUsers() {
 
 // Main Operations
 async function checkAndUpdateInactiveUsers() {
-  const userActivitiesMap = getUserActivities();
+  const userActivitiesMap = await getUserActivities(); // Await this
   const currentTime = Date.now();
   const chalk = getChalk();
 
@@ -159,7 +159,7 @@ async function checkAndUpdateInactiveUsers() {
 
   // Process active users for removal from inactivity database
   try {
-    console.log(chalk.bgYellow.black('Successfully updated inactiveusers collection in DB.'));
+    console.log(chalk.bgYellow.black('Successfully updated inactive users collection in DB.'));
     const removalPromises = [];
 
     for (const userId of activeUserIds) {
@@ -171,7 +171,7 @@ async function checkAndUpdateInactiveUsers() {
 
       try {
         // Check if the user is in the inactivity database before trying to remove them
-        console.log(chalk.cyan`Checking if user ${userId} is in inactivity database...`);
+        console.log(chalk.cyan(`Checking if user ${userId} is in inactivity database...`));
         const userExists = await inactiveDB.findOne({ userId: userId.toString() });
         if (userExists) {
           removalPromises.push(removeFromInactivityDB(userId));
@@ -184,7 +184,7 @@ async function checkAndUpdateInactiveUsers() {
       }
 
       // Mark the user as processed
-      processedActiveUsers.add(userId); // Use delete to remove from Set
+      processedActiveUsers.add(userId);
     }
 
     const removalResults = await Promise.all(removalPromises);
@@ -200,7 +200,7 @@ async function checkAndUpdateInactiveUsers() {
       console.log(chalk.red(`Failed to remove ${failureCount} active users from inactivity database.`));
     }
 
-    const inactiveUsers = getInactiveUsers(); // Get updated inactive users
+    const inactiveUsers = await getInactiveUsers(); // Await the result
     console.log("Updated Inactive Users Map:", inactiveUsers);
 
   } catch (error) {
