@@ -49,44 +49,93 @@ async function storeChannels(client) {
     }
 }
 
-// Function to track and update DB with text channel activity
-async function trackAndLogTextChannelActivity(channel) {
-    const messages = await channel.messages.fetch({ limit: 100 });
-    const userActivities = new Map();
 
-    for (const [messageId, message] of messages) {
-        const user = message.author;
 
-        if (!userActivities.has(user.id)) {
-            userActivities.set(user.id, {
-                userName: user.username,
-                lastMessage: message.content,
-                lastActive: message.createdAt,
-                lastVoiceActivity: null // Initialize lastVoiceActivity as null
 
-            });
-        } else if (message.createdAt > userActivities.get(user.id).lastActive) {
-            userActivities.get(user.id).lastMessage = message.content;
-            userActivities.get(user.id).lastActive = message.createdAt;
+// Function to fetch the latest messages from all text channels
+async function refreshLatestMessages(client) {
+    const chalk = getChalk(); // Get the chalk instance
+
+    try {
+        const guild = await client.guilds.fetch(process.env.GUILD_ID);
+        const channels = guild.channels.cache;
+
+        for (const channel of channels.values()) {
+            if (channel.type === ChannelType.GuildText) {
+                // Fetch the latest messages
+                const messages = await channel.messages.fetch({ limit: 100 });
+                await trackAndLogTextChannelActivity(channel, messages);
+            }
         }
-    }
 
-    for (const [userId, activity] of userActivities.entries()) {
-        await UserActivity.findOneAndUpdate(
-            { userId: userId, channelName: channel.name },
-            {
-                userName: activity.userName,
-                lastMessage: activity.lastMessage,
-                lastActive: activity.lastActive,
-                lastVoiceActivity: activity.lastVoiceActivity // Store lastVoiceActivity if exists
-            },
-            { upsert: true }
-        );
-
-        // Store updated activity in userActivitiesMap
-        userActivitiesMap.set(userId, activity);
+        console.log(chalk.cyan("Latest messages refreshed from all text channels."));
+    } catch (error) {
+        console.error(chalk.red('Error refreshing latest messages:'), error);
     }
 }
+
+
+
+
+
+
+// Function to track and update DB with text channel activity
+async function trackAndLogTextChannelActivity(channel) {
+    const chalk = getChalk(); // Get the chalk instance
+
+    try {
+        // Fetch the last 100 messages from the channel
+        const messages = await channel.messages.fetch({ limit: 100 });
+
+        // Check if messages is a Collection and not empty
+        if (!messages || messages.size === 0) {
+            console.log(`No messages found in channel: ${channel.name}`);
+            return; // Exit the function if no messages
+        }
+
+        const userActivities = new Map();
+
+        for (const message of messages.values()) { // Use .values() to iterate over the Collection
+            const user = message.author;
+
+            if (!userActivities.has(user.id)) {
+                userActivities.set(user.id, {
+                    userName: user.username,
+                    lastMessage: message.content,
+                    lastActive: message.createdAt,
+                    lastVoiceActivity: null // Initialize lastVoiceActivity as null
+                });
+            } else if (message.createdAt > userActivities.get(user.id).lastActive) {
+                userActivities.get(user.id).lastMessage = message.content;
+                userActivities.get(user.id).lastActive = message.createdAt;
+            }
+        }
+
+        for (const [userId, activity] of userActivities.entries()) {
+            await UserActivity.findOneAndUpdate(
+                { userId: userId, channelName: channel.name },
+                {
+                    userName: activity.userName,
+                    lastMessage: activity.lastMessage,
+                    lastActive: activity.lastActive,
+                    lastVoiceActivity: activity.lastVoiceActivity // Store lastVoiceActivity if exists
+                },
+                { upsert: true }
+            );
+
+            // Store updated activity in userActivitiesMap
+            const existingActivity = userActivitiesMap.get(userId);
+            if (!existingActivity || activity.lastActive > existingActivity.lastActive) {
+                userActivitiesMap.set(userId, activity);
+            }
+        }
+
+        console.log(chalk.green(`Successfully tracked messages in channel: ${channel.name}`));
+    } catch (error) {
+        console.error(`Error tracking messages in channel: ${channel.name}`, error);
+    }
+}
+
 
 // Function to track voice channel activity in real time
 function trackVoiceChannelActivity(client) {
@@ -145,8 +194,13 @@ async function logVoiceActivity(userId, userName, channelName, action) {
             lastActive: currentDate, // Update lastActive with the most recent activity
             lastVoiceActivity: currentDate
         };
-        currentActivity.lastVoiceActivity = currentDate;
-        currentActivity.lastActive = currentDate;
+
+        // Update lastActive based on the most recent activity
+        if (currentDate > currentActivity.lastActive) {
+            currentActivity.lastVoiceActivity = currentDate;
+            currentActivity.lastActive = currentDate;
+        }
+
         userActivitiesMap.set(userId, currentActivity);
 
         console.log(chalk.magentaBright(`Voice activity logged for user: ${userName} - ${action}`));
@@ -157,11 +211,14 @@ async function logVoiceActivity(userId, userName, channelName, action) {
 
 // Function to retrieve the user activity from the Map
 function getUserActivities() {
-    console.log('Updated User Activities Map: ', userActivitiesMap); // Debug
+    const chalk = getChalk(); // Get the chalk instance
+
+    console.log(chalk.bgYellow.black('Updated User Activities Map: '), userActivitiesMap); // Debug
     return userActivitiesMap;
 }
 
 module.exports = {
     storeChannels,
     getUserActivities,
+    refreshLatestMessages
 };
