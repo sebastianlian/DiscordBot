@@ -5,6 +5,10 @@ const purgeHistorySchema = new mongoose.Schema({
     username: { type: String, required: true },
     executionDate: { type: Date, default: Date.now },
     purgedCount: { type: Number, required: true },
+    purgedUsers: [{ 
+        userId: { type: String, required: true },
+        username: { type: String, required: true }
+    }]
 });
 
 const PurgeHistory = mongoose.model('PurgeHistory', purgeHistorySchema);
