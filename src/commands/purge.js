@@ -8,7 +8,7 @@ module.exports = {
         .setName("purge")
         .setDescription("Kicks users who are inactive.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-    
+
     async execute(interaction) {
         const embed = new EmbedBuilder()
             .setTitle("Purge Confirmation")
@@ -37,14 +37,21 @@ module.exports = {
 
         collector.on("collect", async (buttonInteraction) => {
             if (buttonInteraction.customId === "confirm") {
-                const inactiveUsers = getInactiveUsers();
+                const inactiveUsers = await getInactiveUsers(); // Await the function
                 const purgedUsers = [];
+                console.log("Inactive Users:", inactiveUsers);
 
-                for (const [userId, userData] of inactiveUsers) {
+                if (!(inactiveUsers instanceof Map)) {
+                    console.error("Error: inactiveUsers is not a Map");
+                    return;
+                }
+
+                for (const [userId, userData] of inactiveUsers.entries()) { // Iterate over the Map
                     const member = interaction.guild.members.cache.get(userId);
 
                     if (member) {
                         try {
+                            // kicks members who are in the list and updates the purged count
                             await member.kick("Inactive user purge");
                             purgedUsers.push({
                                 userId: userId,
