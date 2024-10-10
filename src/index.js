@@ -1,5 +1,5 @@
 // Load environment variables from a .env file into process.env
-require('dotenv').config();
+require('dotenv').config({ path: `${__dirname}/.env` });
 
 // Import necessary modules from discord.js
 const { Client, IntentsBitField, GatewayIntentBits, Collection } = require('discord.js');
@@ -27,7 +27,7 @@ global.client = new Client({
 client.commands = new Collection();
 
 // Read all command files from the "commands" directory
-const commandFiles = fs.readdirSync("commands").filter(file => file.endsWith(".js"));
+const commandFiles = fs.readdirSync("../commands").filter(file => file.endsWith(".js"));
 
 // Array to hold command data
 const commands = [];
@@ -41,7 +41,7 @@ for (const file of commandFiles) {
 }
 
 // Read all event files from the "events" directory
-const eventFiles = fs.readdirSync("events").filter(file => file.endsWith(".js"));
+const eventFiles = fs.readdirSync("../events").filter(file => file.endsWith(".js"));
 
 // Loop through each event file
 for (const file of eventFiles) {
@@ -76,5 +76,10 @@ client.on('ready', async (clientInstance) => {
     }, 20000); // Check every 20 secs, adjust as needed
 });
 
+// Log the bot token for debugging
+console.log('Bot Token:', process.env.TOKEN); // Debugging line
+
 // Log in to Discord using the token from environment variables
-client.login(process.env.TOKEN);
+client.login(process.env.TOKEN)
+    .then(() => console.log("Bot is logged in!"))
+    .catch(error => console.error('Error logging in:', error));
