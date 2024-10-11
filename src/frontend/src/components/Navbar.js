@@ -86,7 +86,7 @@ const Navbar = () => {
                                         <QuizIcon sx={{ ml: 1 }} />
                                     </MenuItem> {/* Logout Menu Item */}
 
-                                    <MenuItem component={Link} to="/logout" onClick={handleLogout}>Logout
+                                    <MenuItem component={Link} to="/login" onClick={handleLogout}>Logout
                                         <LogoutIcon sx={{ ml: 1 }} />
                                     </MenuItem>
                                 </Menu>
