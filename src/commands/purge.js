@@ -14,7 +14,7 @@ module.exports = {
 	
     async execute(interaction) {
 		const embed = new EmbedBuilder()
-        	.setTitle("Purge Confirmation")
+        	.setTitle("PurgePage Confirmation")
         	.setDescription("Would you like to continue with the purge?")
         	.setColor(0x0099FF)
 
@@ -78,7 +78,7 @@ module.exports = {
 				}
 
 				const confirmEmbed = new EmbedBuilder()
-					.setTitle("Purge Confirmed")
+					.setTitle("PurgePage Confirmed")
 					.setDescription("Removed $[purgedCount] inactive users.")
 					.setColor(0x2ECC71);
 
@@ -88,7 +88,7 @@ module.exports = {
 				});
 			} else {
 				const cancelEmbed = new EmbedBuilder()
-					.setTitle("Purge Canceled")
+					.setTitle("PurgePage Canceled")
 					.setDescription("No users removed.")
 					.setColor(0xE74C3C);
 
@@ -101,7 +101,7 @@ module.exports = {
 
 		collector.on("end", (collected, reason) => {
 			if (reason === "time") {
-				interaction.followUp("Purge confirmation timed out.");
+				interaction.followUp("PurgePage confirmation timed out.");
 			}
 		});
 		
