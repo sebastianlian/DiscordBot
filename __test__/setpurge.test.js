@@ -27,6 +27,6 @@ describe("Test setpurge command", () => {
 
     const [embed] = replyArguments.embeds;
     expect(embed).toBeInstanceOf(Object);
-    expect(embed.data.title).toBe("Purge window set to 7 days.");
+    expect(embed.data.title).toBe("PurgePage window set to 7 days.");
   });
 });
