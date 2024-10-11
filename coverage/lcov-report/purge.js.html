@@ -241,7 +241,7 @@ module.exports = {
 	
     async execute(interaction) {
 		const embed = new EmbedBuilder()
-        	.setTitle("Purge Confrimation")
+        	.setTitle("PurgePage Confrimation")
         	.setDescription("Would you like to continue with the purge?")
         	.setColor(0x0099FF)
 &nbsp;
@@ -284,7 +284,7 @@ module.exports = {
 				}
 &nbsp;
 				const confirmEmbed = <span class="cstat-no" title="statement not covered" >new EmbedBuilder()</span>
-					.setTitle("Purge Confirmed")
+					.setTitle("PurgePage Confirmed")
 					.setDescription("Removing inactive users...")
 					.setColor(0x2ECC71);
 &nbsp;
@@ -294,7 +294,7 @@ module.exports = {
 				});
 			} else {
 				const cancelEmbed = <span class="cstat-no" title="statement not covered" >new EmbedBuilder()</span>
-					.setTitle("Purge Canceled")
+					.setTitle("PurgePage Canceled")
 					.setDescription("No users removed.")
 					.setColor(0xE74C3C);
 &nbsp;
@@ -307,7 +307,7 @@ module.exports = {
 &nbsp;
 		collector.on("end", <span class="fstat-no" title="function not covered" >(c</span>ollected, reason) =&gt; {
 <span class="cstat-no" title="statement not covered" >			if (reason === "time") {</span>
-<span class="cstat-no" title="statement not covered" >				interaction.followUp("Purge confirmation timed out.");</span>
+<span class="cstat-no" title="statement not covered" >				interaction.followUp("PurgePage confirmation timed out.");</span>
 			}
 		});
 		

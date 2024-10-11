@@ -156,7 +156,7 @@ module.exports = {
   async execute(interaction) {
     purgeDays = interaction.options.getInteger("number");
     const purgeDaysEmbed = new EmbedBuilder()
-      .setTitle(`Purge window set to ${purgeDays} days.`)
+      .setTitle(`PurgePage window set to ${purgeDays} days.`)
       .setColor(0x0099ff);
 &nbsp;
     interaction.reply({
