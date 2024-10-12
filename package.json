@@ -4,6 +4,9 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
+    "start": "node src/backend/server.js",
+    "bot": "node src/index.js",
+    "dev": "concurrently \"npm run bot\" \"npm run start\"",
     "test": "jest --coverage"
   },
   "keywords": [],
@@ -12,6 +15,7 @@
   "dependencies": {
     "@discordjs/builders": "^1.6.5",
     "@discordjs/rest": "^2.0.1",
+    "bulma": "^1.0.2",
     "chalk": "^5.3.0",
     "chalk-animation": "^2.0.3",
     "discord-api-types": "^0.37.56",
@@ -20,6 +24,7 @@
     "mongoose": "^7.5.3"
   },
   "devDependencies": {
+    "concurrently": "^9.0.1",
     "jest": "^29.7.0"
   }
 }
