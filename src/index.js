@@ -1,5 +1,6 @@
 // Load environment variables from a .env file into process.env
 require('dotenv').config({ path: `${__dirname}/.env` });
+//comment for testing
 
 // Import necessary modules from discord.js
 const { Client, IntentsBitField, GatewayIntentBits, Collection } = require('discord.js');

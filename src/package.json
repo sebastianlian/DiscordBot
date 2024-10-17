@@ -14,11 +14,13 @@
   "description": "",
   "dependencies": {
     "@fontsource/roboto": "^5.1.0",
+    "axios": "^1.7.7",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-    "mongoose": "^8.7.1"
+    "mongoose": "^8.7.1",
+    "react-scripts": "^5.0.1"
   },
   "devDependencies": {
     "concurrently": "^9.0.1"
