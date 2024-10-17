@@ -1,0 +1,349 @@
+@startuml
+
+package "src" {
+    package "functions" {
+        class ChannelManager {
+            + storeChannels(client): void
+            + refreshLatestMessages(client): void
+            + trackAndLogTextChannelActivity(channel): void
+            + trackVoiceChannelActivity(client): void
+            + logVoiceActivity(userId, userName, channelName, action): void
+            + getUserActivities(): void
+        }
+
+        class Inactivity {
+            + addOrUpdateInactivityDB(userId, userName, lastActive, lastMessage): void
+            + removeFromInactivityDB(userId): void
+            + checkAndUpdateInactiveUsers(): void
+            + logActiveUsersMap(): void
+            + trackUserActivity(client): void
+            + getInactiveUsers(): void
+        }
+
+        class BlacklistAdd {
+            + insertBlacklistDB(userid): void
+        }
+
+        class BlacklistRemove {
+            + removeBlacklistDB(userid, userTag): void
+        }
+
+        class BlacklistShow {
+            + showBlacklistDB(client): void
+        }
+    }
+
+    package "utility" {
+        class Utils {
+            + getChalk(): ChalkInstance
+        }
+    }
+
+    package "commands" {
+        class Blacklist {
+            + data: CommandData
+            + execute(args): void
+        }
+
+        class Help {
+            + data: CommandData
+            + execute(args): void
+        }
+
+        class Ping {
+            + data: CommandData
+            + execute(args): void
+        }
+
+        class Power {
+            + data: CommandData
+            + execute(args): void
+        }
+
+        class Purge {
+            + data: CommandData
+            + execute(args): void
+        }
+
+        class RoleTimes {
+            + data: CommandData
+            + execute(args): void
+        }
+
+        class SetPurge {
+            + data: CommandData
+            + execute(args): void
+        }
+
+        class ShowInactivity {
+            + data: CommandData
+            + execute(args): void
+        }
+
+        class Timer {
+            + data: CommandData
+            + execute(args): void
+        }
+
+        class CommandHandler {
+            + registerCommand(command: Command): void
+            + getCommand(name: String): Command
+        }
+    }
+
+    package "events" {
+        class InteractionCreate {
+            + execute(args): void
+        }
+
+        class Ready {
+            + execute(args): void
+        }
+    }
+
+    package "models" {
+        class BlacklistSchema {
+            + blackListedUsers: List<String>
+        }
+
+        class BlacklistDB {
+             + find(): Promise<BlacklistUser[]>
+             + save(): Promise<void>
+        }
+
+        class ChannelSchema {
+            + name: String
+            + type: String <<enum>>
+            + id: String
+            + createdAt: Date
+        }
+
+        class Channel {
+            + find(): Promise<Channel[]>
+            + save(): Promise<void>
+            + delete(): Promise<void>
+        }
+
+        class InactivitySchema {
+            + userId: String
+            + userName: String
+            + lastMessageDate: Date
+            + lastMessage: String
+        }
+
+        class InactiveDB {
+            + find(): Promise<InactiveUser[]>
+            + save(): Promise<void>
+            + delete(): Promise<void>
+        }
+
+        class PurgeHistorySchema {
+            + userId: String
+            + username: String
+            + executionDate: Date
+            + purgedCount: Number
+            + purgedUsers: List<PurgedUser>
+        }
+
+        class PurgedUser {
+            + userId: String
+            + username: String
+        }
+
+        class PurgeHistory {
+            + find(): Promise<PurgeHistory[]>
+            + save(): Promise<void>
+            + delete(): Promise<void>
+        }
+
+        class RoleTimeSchema {
+            + roleID: String
+            + days: int
+        }
+
+        class RoleTimeDB {
+            + find(): Promise<RoleTime[]>
+            + save(): Promise<void>
+            + delete(): Promise<void>
+        }
+
+        class UserActivitySchema {
+            + userId: String
+            + channelName: String
+            + userName: String
+            + lastMessage: String
+            + lastMessageDate: Date
+            + lastVoiceActivity: Date
+            + lastActive: Date
+        }
+
+        class UserActivity {
+            + find(): Promise<UserActivity[]>
+            + save(): Promise<void>
+            + delete(): Promise<void>
+        }
+    }
+
+    package "frontend" {
+        package "components" {
+            class Navbar {
+                + useState()
+                + handleMenuOpen(event: Event): void
+                + handleMenuClose(): void
+                + handleLogout(): void
+                + toggleDrawer(open: boolean): void
+                + render(): JSX.Element
+            }
+
+            Navbar : - anchorEl: Element
+            Navbar : - drawerOpen: boolean
+            Navbar : - location: Location
+            Navbar : - navigate: Function
+
+            class ComponentB {
+                + render(): void
+            }
+        }
+
+        package "pages" {
+            class AccountPage {
+                + render(): void
+            }
+            class Home {
+                + render(): void
+            }
+
+            class FAQPage {
+                + render(): void
+            }
+
+            class BlacklistPage {
+                + render(): void
+            }
+
+            class InactivityPage {
+                + render(): void
+            }
+
+            class LoginPage {
+                + render(): void
+            }
+
+            class PurgePage {
+                + render(): void
+            }
+
+            class RolesPage {
+                 + render(): void
+            }
+
+            class SignupPage {
+                  + render(): void
+            }
+
+            class UserActivityPage {
+                  + render(): void
+            }
+        }
+
+        package "themes" {
+            class Theme {
+                + applyTheme(): void
+            }
+        }
+
+        class IndexHTML {
+            + render(): void
+        }
+    }
+
+    package "backend" {
+        class Server {
+            + start(): void
+            + listen(port: Number): void
+            + get(path: String, callback): void
+        }
+
+        class API {
+            + fetchInactivityData(): Promise<any>
+            + fetchUserActivityData(): Promise<any>
+            + fetchFAQ(): Promise<any>
+        }
+    }
+}
+
+class Index {
+    + startBot(): void
+}
+
+class DiscordClient {
+    + commands: Collection
+    + login(token): Promise<void>
+    + on(eventName, callback): void
+    + once(eventName, callback): void
+}
+
+Index --> DiscordClient : uses
+Index --> ChannelManager : uses
+Index --> Inactivity : uses
+Index --> Utils : uses
+Index --> CommandHandler : uses
+Index --> EventHandler : uses
+Index --> IndexHTML : renders
+Index --> Server : uses
+Index --> API : uses
+
+Blacklist --> CommandHandler : registers
+Help --> CommandHandler : registers
+Ping --> CommandHandler : registers
+Power --> CommandHandler : registers
+Purge --> CommandHandler : registers
+RoleTimes --> CommandHandler : registers
+SetPurge --> CommandHandler : registers
+ShowInactivity --> CommandHandler : registers
+Timer --> CommandHandler : registers
+
+InteractionCreate --> EventHandler : listens to
+Ready --> EventHandler : listens to
+Event --> EventHandler : listens to
+
+BlacklistAdd --> CommandHandler : registers
+BlacklistRemove --> CommandHandler : registers
+BlacklistShow --> CommandHandler : registers
+
+Event --> EventHandler : listens to
+User --> ActivityLog : tracks
+Channel --> ActivityLog : logs
+InactiveDB --> API : fetches data
+UserActivity --> API : fetches data
+
+Server --> API : handles requests
+API --> InactiveDB : fetch inactivity
+API --> UserActivity : fetch user activities
+
+BlacklistSchema --> BlacklistDB : represents
+ChannelSchema --> Channel : represents
+InactivitySchema --> InactiveDB : represents
+PurgeHistorySchema --> PurgeHistory : represents
+PurgeHistorySchema o-- PurgedUser : contains
+RoleTimeSchema --> RoleTimeDB : represents
+UserActivitySchema --> UserActivity : represents
+
+' Notes on process initiation
+note right of Index
+    Starts the bot
+end note
+
+note right of Server
+    Initiates backend server
+end note
+
+note right of Index
+    Serves as entry point for frontend
+end note
+
+' Indicating concurrent processes
+Index --> Server : starts concurrently
+Index --> IndexHTML : starts concurrently
+
+@enduml
