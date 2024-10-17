@@ -233,7 +233,9 @@ async function checkAndUpdateInactiveUsers() {
 
 
 module.exports = {
+  addOrUpdateInactivityDB,
   checkAndUpdateInactiveUsers,
   getInactiveUsers,
   trackUserActivity,
+  removeFromInactivityDB,
 };
