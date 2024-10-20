@@ -1,8 +1,19 @@
 const mongoose = require("mongoose");
 
 const blacklistSchema = new mongoose.Schema({
-  blackListedUsers: [String],
-});
+  blackListedUsers: [
+      {
+        userId: {
+          type: String,
+          required: true
+        },
+        userName: {
+          type: String,
+          required: true
+        }
+      }
+    ]
+  });
 
 const blackListDB = mongoose.model("BlacklistUser", blacklistSchema);
 

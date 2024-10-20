@@ -35,6 +35,7 @@ async function storeChannels(client) {
                 // Track text channel activity
                 if (channel.type === ChannelType.GuildText) {
                     await trackAndLogTextChannelActivity(channel);
+                    await trackUserReactions(client);
                 }
             }
         }
@@ -48,9 +49,6 @@ async function storeChannels(client) {
         console.error(chalk.red('Error storing channels or user activity'), error);
     }
 }
-
-
-
 
 // Function to fetch the latest messages from all text channels
 async function refreshLatestMessages(client) {
@@ -73,11 +71,6 @@ async function refreshLatestMessages(client) {
         console.error(chalk.red('Error refreshing latest messages:'), error);
     }
 }
-
-
-
-
-
 
 // Function to track and update DB with text channel activity
 async function trackAndLogTextChannelActivity(channel) {
@@ -209,6 +202,95 @@ async function logVoiceActivity(userId, userName, channelName, action) {
     }
 }
 
+// Function to track message reactions
+function trackUserReactions(client) {
+    client.on('messageReactionAdd', async (reaction, user) => {
+        if (user.bot) return; // Ignore bot reactions
+        const { message } = reaction;
+        const channelName = message.channel.name;
+
+        // Log the reaction activity
+        console.log(`${user.username} reacted with ${reaction.emoji.name} to message: "${message.content}" in channel: ${channelName}`);
+
+        // Update user activity in the database
+        await logReactionActivity(user.id, user.username, channelName, message.content, reaction.emoji.name);
+    });
+}
+
+// Function to log reaction activity in the database
+async function logReactionActivity(userId, userName, channelName, messageContent, emojiName) {
+    const chalk = getChalk();
+    const currentDate = new Date();
+
+    try {
+        // Fetch existing user activity from the database
+        const userActivity = await UserActivity.findOne({ userId: userId, channelName: channelName });
+
+        // Prepare lastReaction object for the current activity
+        const lastReaction = {
+            messageContent: messageContent,
+            emoji: emojiName,
+            timestamp: currentDate
+        };
+
+        // Default lastActive to the current time
+        let lastActive = currentDate;
+
+        // If user activity exists, compare timestamps
+        if (userActivity) {
+            const lastReactionTimestamp = userActivity.lastReaction?.timestamp || new Date(0); // Fallback to epoch
+            const lastActiveTimestamp = userActivity.lastActive || new Date(0);
+
+            // If this reaction is newer than the last logged reaction
+            if (currentDate > lastReactionTimestamp && currentDate > lastActiveTimestamp) {
+                lastActive = currentDate; // Update lastActive for the current activity
+            } else {
+                lastActive = lastActiveTimestamp; // Retain the old lastActive timestamp
+            }
+        }
+
+        // Update the user activity in the database with the new reaction and activity
+        const result = await UserActivity.findOneAndUpdate(
+            { userId: userId, channelName: channelName },
+            {
+                userName: userName,
+                lastActive: lastActive, // Update the lastActive field
+                lastReaction: lastReaction, // Update the lastReaction field
+            },
+            { upsert: true, new: true } // Insert if doesn't exist, return the updated document
+        );
+
+        // Update the in-memory map with the new user activity
+        const currentActivity = userActivitiesMap.get(userId) || {
+            userName: userName,
+            lastReaction: lastReaction.timestamp,
+            lastActive: lastActive
+        };
+
+        // Update in-memory lastActive if the current activity is more recent
+        if (currentDate > currentActivity.lastActive) {
+            currentActivity.lastReaction = lastReaction.timestamp;
+            currentActivity.lastActive = lastActive; // Update lastActive based on the most recent activity
+        }
+
+        userActivitiesMap.set(userId, currentActivity);
+
+        // Log the updated activity information
+        console.log(chalk.cyan(`User activity updated for ${userName} in channel ${channelName}:`,
+            JSON.stringify({ lastActive, lastReaction }, null, 2) // Display a readable JSON object
+        ));
+
+        console.log(chalk.magentaBright(`Reaction logged for user: ${userName} - Reacted with ${emojiName}`));
+
+    } catch (error) {
+        console.error(chalk.red('Error logging reaction activity:'), error);
+    }
+}
+
+
+
+
+
 // Function to retrieve the user activity from the Map
 function getUserActivities() {
     const chalk = getChalk(); // Get the chalk instance
@@ -220,5 +302,5 @@ function getUserActivities() {
 module.exports = {
     storeChannels,
     getUserActivities,
-    refreshLatestMessages
+    refreshLatestMessages,
 };

@@ -7,7 +7,7 @@ const { Client, IntentsBitField, GatewayIntentBits, Collection } = require('disc
 
 // Import custom functions for channel management, inactivity database, and activity checks
 const { storeChannels, refreshLatestMessages } = require('./functions/channelManager'); // Adjust the path accordingly
-const { checkAndUpdateInactiveUsers, logActiveUsersMap, trackUserActivity } = require('./functions/inactivity'); // Adjust the path accordingly
+const { checkAndUpdateInactiveUsers, logActiveUsersMap, trackUserActivity} = require('./functions/inactivity'); // Adjust the path accordingly
 const { getChalk } = require('./utility/utils');
 
 // Import Node.js filesystem module for file operations
@@ -20,7 +20,8 @@ global.client = new Client({
         IntentsBitField.Flags.Guilds, // Required to receive guild events
         IntentsBitField.Flags.GuildMessages, // Required to receive message events
         IntentsBitField.Flags.MessageContent, // Required to access message content
-        GatewayIntentBits.GuildVoiceStates
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessageReactions, // Required to access reaction event
     ]
 });
 

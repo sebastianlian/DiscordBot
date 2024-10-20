@@ -1,0 +1,19 @@
+const mongoose = require("mongoose");
+
+
+const powerSchema = new mongoose.Schema({
+    roleID: {
+      type: String,
+      required: true,
+    },
+    roleName: {
+      type: String,
+      required: true,
+    },
+  });
+
+  const PowerDB = mongoose.model("Power", powerSchema);
+
+  module.exports = {
+    PowerDB
+  }
