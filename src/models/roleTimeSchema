@@ -2,6 +2,14 @@ const mongoose = require("mongoose");
 
 
 const roleTimeSchema = new mongoose.Schema({
+    userId: {
+            type: String,
+            required: true,
+        },
+    userName: {
+        type: String,
+        required: true,
+    },
     roleID: {
       type: String,
       required: true,
