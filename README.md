@@ -75,7 +75,7 @@ https://github.com/GGC-SD/DiscordBot.git
 
 ## Technologies
 - JavaScript
-- [Node.js](https://nodejs.org/en/)z
+- [Node.js](https://nodejs.org/en/)
   
      Updates Fall 2024
 - React (https://react.dev/)
@@ -83,6 +83,7 @@ https://github.com/GGC-SD/DiscordBot.git
 - Express.js (https://expressjs.com/)
 - MogoDB (https://www.mongodb.com/)
 - Axios (https://axios-http.com/docs/intro)
+- Dotenv (https://www.npmjs.com/package/dotenv)
 
 ## Working Features
 - ***Dashboard:*** The bot now has a web based UI dashboard that, in future, will be the only point of interaction with the bot. Currently only displays information, no commands can be ran from here as of yet.
