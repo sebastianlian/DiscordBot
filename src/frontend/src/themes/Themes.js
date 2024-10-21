@@ -77,18 +77,11 @@ const Theme = createTheme({
                 root: {
                     padding: '1rem',
                     borderRadius: '8px',
+                    color: 'black',  // Set the color to black
                     '&:hover': {
                         backgroundColor: '#000000',
-                        color: 'white',
+                        color: 'white',  // Change color to white on hover
                         textTransform: 'uppercase',
-                    },
-                    // Targeting the sidebar-title to prevent hover effects
-                    '&.sidebar-title': {
-                        '&:hover': {
-                            backgroundColor: 'transparent',
-                            color: 'white',
-                            textTransform: 'none',
-                        },
                     },
                 },
             },
@@ -96,9 +89,25 @@ const Theme = createTheme({
         MuiListItemText: {
             styleOverrides: {
                 root: {
-                    color: 'black', // Set text color to black for sidebar items
+                    color: 'black',  // Ensure text remains black
                     '&:hover': {
-                        color: 'inherit', // Prevent hover color change for the text
+                        color: 'white',  // Change to white on hover
+                    },
+                },
+            },
+        },
+        // Ensure the sidebar title is black and unaffected by hover
+        MuiTypography: {
+            styleOverrides: {
+                root: {
+                    '&.sidebar-title': {
+                        color: 'black', // Ensure the text is black
+                        textTransform: 'none',
+                        fontWeight: 'bold',
+                        '&:hover': {
+                            backgroundColor: 'transparent', // No background color change on hover
+                            color: 'white', // Keep text color black on hover
+                        },
                     },
                 },
             },
