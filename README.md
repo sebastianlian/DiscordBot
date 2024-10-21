@@ -67,7 +67,7 @@ https://github.com/GGC-SD/DiscordBot.git
 
 # Fall 2024
 ## Description
-- Text here
+- Discord is a communication platform designed for creating communities, where users can interact through text, voice, and video channels, while Discord bots are automated programs that can perform tasks such as moderating conversations, managing users, or providing entertainment within these communities. Our team has been tasked with creating a discord bot that can moderate servers. It is able to track activity across multiple channels and can purge users who have been deemed inactive for too long in order to keep the server lean. The main goal is to have this process done in an automated fashion periodically, and for the admins to be able to log into a dashboard to alter settings as needed.
 
 ## Links
 - [Repo Link](https://github.com/GGC-SD/DiscordBot.git)
@@ -75,40 +75,47 @@ https://github.com/GGC-SD/DiscordBot.git
 
 ## Technologies
 - JavaScript
-- [Node.js](https://nodejs.org/en/)
+- [Node.js](https://nodejs.org/en/)z
+  
+     Updates Fall 2024
+- React (https://react.dev/)
+- Material UI (https://mui.com/material-ui/)
+- Express.js (https://expressjs.com/)
+- MogoDB (https://www.mongodb.com/)
+- Axios (https://axios-http.com/docs/intro)
 
 ## Working Features
-- ***Help command:*** Lists out all the different configuration commands for the bot.
-- ***Blacklist show command:*** Shows the current blacklisted user/roles. Blacklisted users will not be purged from the server.
-- ***Blacklist add command:*** Lets you add a specific user/role to the blacklist which makes them bypass the purges.
-- ***Blacklist remove command:*** Lets you remove a specific user/role from the blacklist.
-- ***Blacklist Database:*** Stores user data for the blacklist.
-- ***Show inactivity command:*** Shows members who are considered "inactive" that are eligible to be purged.
+- ***Dashboard:*** The bot now has a web based UI dashboard that, in future, will be the only point of interaction with the bot. Currently only displays information, no commands can be ran from here as of yet.
+- ***Blacklist:*** Blacklist now works as intended. Users that are added are protected from the purge.
+- ***Inactivity tracking:*** Adding/Removing users from the inactive list is now done automatically.
+- ***Purge command:*** Purging is now fuctional. Users to be purged is drawn from inactivity list.
 
 ## Installation Steps
 - Using your Operating Systems Terminal set the ExecutionPolicy. Use the command: Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 - The RemoteSigned is also a safe PowerShell Execution policy to set in an enterprise environment. This policy dictates that any script that was not created on the system that the script is running on, should be signed. Therefore, this will allow you to write your own script and execute it. You would not be able to run a script that was downloaded from the Internet, or got from a friend who wrote it under his account or on a different computer. PowerShell differentiates between script you wrote on that computer, and a script that came from elsewhere using the file metadata.
 - (The scope makes the RemoteSigned only effect a single user instead of allowing all the users to become effected by the terminal command. This is a security precaution.)
 - Install <a href = "https://nodejs.org/en">Node.js</a>. and its dependency <a href = "https://community.chocolatey.org/packages/nodejs.install">Chocolatey</a>.
-- Initialize the bots project using command npm init -y.
+- [Removed: Initializing the bot manually is uneccessary with the current setup.] 
 - Install nodemon using the terminal and the command npm install -g nodemon (nodemon installation allows the script to run continuously in the background while also autoupdating anytime script is changed in the bot project and saved allowing all changes to be quickly deployed for the bot).
-- Install dotenv on using the terminal and the command npm install dotenv (This causes allows your bot project a place for the bots token to be stored later in the project and then be placed into a gitignore file in order to keep your token and other confidential project information safe if the bot is shared on GitHub.)
-- Install discord.js using the terminal and the command npm i discord.js.
 - Create a Discord bot on the Discord bot <a href = "https://discord.com/login?redirect_to=%2Fdevelopers%2Fapplications%2F">Discord Developer Portal</a>.
 - Add the bot's token (Discord developer Portal-> application-> "specific app"-> bot -> Reset Token) to config.json and adjuste the configuration to indicate where the script is on your local machine.
 - Run the bot by using nodemon or nodemon index.js or any other command you prefer.
 - Add database token (Go to your MongoDB account. Under 'Database' select Clusters. Select the corresponding DB, Select the Connect button. Under 'Connect to your application', select Drivers. Follow the instructions to complete the setup and get the token for the database.)
 - Add guild id, in the Discord app, right-click on the Server Icon. Select copy Server ID.
 
-## How To Run
-- Text here
-- Text here
-- Text here
+   Updates 2024
+- cd into src active directing for all installations from here.
+- Install dotenv on using the terminal and the command npm install dotenv (This causes allows your bot project a place for the bots token to be stored later in the project and then be placed into a gitignore file in order to keep your token and other confidential       project information safe if the bot is shared on GitHub.)
+- Install discord.js using the terminal and the command npm i discord.js.
+- Install express.js using the terminal and the commmand npm i express (Allows for a simple web server framework to handle requests received from the frontend app.)
+- Install mongoose using the terminal and the commmand npm i mongoose (Enables database integration with MongoDB so the app can read and write to the database.)
+- Install cors using the terminal and the commmand npm i cors 
+- Install axios using the terminal and the commmand npm i axios (Allows front end to fetch data from the server for displaying in the UI.)
+- Install the react router dom using the terminal and the commmand npm i react-router-dom (Helps set up webpage routing on the server.)
+- Install react scripts using the terminal and the commmand npm i react-scripts --save
 
-## Other Project Explanations
-- Text here
-- Text here
-- Text here
+## How To Run
+- From the src active directory, type "npm start" in the terminal and the bot, server, and react app will all start automatically. You will then see a webpage appear in the browser automatically, presenting the home page for the dashboard.
 
 ## Neck Beard Team Roles
 **Sebastian Lian Carmagnola**
