@@ -101,6 +101,9 @@ const Navbar = () => {
                 anchor="left"
                 open={drawerOpen}
                 onClose={toggleDrawer(false)}
+                PaperProps={{
+                    sx: { top: '98px' } // Adjust start of sidebar based AppBar height
+                }}
             >
                 <div
                     role="presentation"
@@ -110,7 +113,7 @@ const Navbar = () => {
                 >
                     <List>
                         <ListItem>
-                            <Typography className="sidebar-title" variant="h6" sx={{ marginLeft: 1 }}>Commands</Typography>
+                            <Typography className="sidebar-title" variant="h6" sx={{ marginLeft: 1 }}>COMMANDS</Typography>
                         </ListItem>
                         <Divider />
                         <ListItem button className="sidebar-item" component={Link} to="/useractivity">
