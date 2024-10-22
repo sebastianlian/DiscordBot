@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Navbar from "../components/Navbar";
 import { Container, Typography, Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import '../App.css'; // Import your CSS file
+
 
 const InactivityPage = () => {
     const [inactiveUsers, setInactiveUsers] = useState([]);

@@ -98,28 +98,34 @@ async function trackAndLogTextChannelActivity(channel) {
                     lastActive: message.createdAt,
                     lastVoiceActivity: null // Initialize lastVoiceActivity as null
                 });
-            } else if (message.createdAt > userActivities.get(user.id).lastActive) {
-                userActivities.get(user.id).lastMessage = message.content;
-                userActivities.get(user.id).lastActive = message.createdAt;
+            } else {
+                const existingActivity = userActivities.get(user.id);
+                // Update if the message is more recent
+                if (message.createdAt > existingActivity.lastActive) {
+                    existingActivity.lastMessage = message.content;
+                    existingActivity.lastActive = message.createdAt;
+                }
             }
         }
 
         for (const [userId, activity] of userActivities.entries()) {
-            await UserActivity.findOneAndUpdate(
-                { userId: userId, channelName: channel.name },
-                {
-                    userName: activity.userName,
-                    lastMessage: activity.lastMessage,
-                    lastActive: activity.lastActive,
-                    lastVoiceActivity: activity.lastVoiceActivity // Store lastVoiceActivity if exists
-                },
-                { upsert: true }
-            );
+            const userActivity = await UserActivity.findOne({ userId: userId, channelName: channel.name });
 
-            // Store updated activity in userActivitiesMap
-            const existingActivity = userActivitiesMap.get(userId);
-            if (!existingActivity || activity.lastActive > existingActivity.lastActive) {
-                userActivitiesMap.set(userId, activity);
+            // Check if the new lastActive is more recent before updating
+            const newLastActive = activity.lastActive;
+            const currentLastActive = userActivity ? userActivity.lastActive : null;
+
+            if (!currentLastActive || newLastActive > currentLastActive) {
+                await UserActivity.findOneAndUpdate(
+                    { userId: userId, channelName: channel.name },
+                    {
+                        userName: activity.userName,
+                        lastMessage: activity.lastMessage,
+                        lastActive: newLastActive, // Update only if the new timestamp is more recent
+                        lastVoiceActivity: activity.lastVoiceActivity // Preserve voice activity
+                    },
+                    { upsert: true }
+                );
             }
         }
 
@@ -230,6 +236,7 @@ async function logReactionActivity(userId, userName, channelName, messageContent
         const lastReaction = {
             messageContent: messageContent,
             emoji: emojiName,
+            userName: userName, // Store the username with the last reaction
             timestamp: currentDate
         };
 
