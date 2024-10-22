@@ -23,9 +23,13 @@ const userActivitySchema = new mongoose.Schema({
     },
     lastVoiceActivity: {
         type: Date,
-        default: ''
+        default: null
     },
      lastReaction: {
+        userName: {
+             type: String,
+             default: ''
+        },
         messageContent: {
             type: String
         },
