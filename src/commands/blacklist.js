@@ -36,54 +36,54 @@ module.exports = {
 		)
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
-	
-    async execute(interaction) {
+
+	async execute(interaction) {
 		const subcommand = interaction.options.getSubcommand();
 
-		//A switch depending which subcommand is used. Also reads the user that is entered to be repeated in the interaction.
-    	switch (subcommand) {
-      		case "add":
-        		const userToAdd = interaction.options.getUser("user");
+		switch (subcommand) {
+			case "add":
+				const userToAdd = interaction.options.getUser("user");
 				const mentionedUser = userMention(userToAdd.id);
-				await blacklistAdd.insertBlacklistDB(userToAdd.id);
+				const userName = userToAdd.username; // Get the username
+
+				// Pass both user ID and username to the insert function
+				await blacklistAdd.insertBlacklistDB(userToAdd.id, userName);
+
 				const addEmbed = new EmbedBuilder()
 					.setDescription(`Added ${mentionedUser.toString()} to the blacklist.`)
-					.setColor(0x2ECC71)
-        		await interaction.reply({
+					.setColor(0x2ECC71);
+				await interaction.reply({
 					embeds: [addEmbed],
 					ephemeral: false
 				});
-        		break;
+				break;
 
-      		case "remove":
-        		const userToRemove = interaction.options.getUser("user");
+			case "remove":
+				const userToRemove = interaction.options.getUser("user");
 				const userTag = userToRemove.tag;
 				blacklistRemove.removeBlacklistDB(userToRemove.id, userTag)
 					.then((resultMessage) => {
-				//await blacklistRemove.removeBlacklistDB(userToRemove.id);
 						const removeEmbed = new EmbedBuilder()
-				//	.setTitle(`Removed ${userToRemove.tag} from the blacklist.`)
 							.setDescription(resultMessage);
+						interaction.reply({
+							embeds: [removeEmbed],
+							ephemeral: false
+						});
+					});
+				break;
 
-        		 interaction.reply({
-					embeds: [removeEmbed],
-					ephemeral: false
-				});
-			})
-        		break;
-
-      		case "show":
+			case "show":
 				const listOfUsers = await blacklistShow.showBlacklistDB(interaction.client);
-				// make the list into a single string
 				const userInList = listOfUsers.join(`\n`);
 				const listEmbed = new EmbedBuilder()
 					.setTitle("Here is the list of blacklisted users/roles.")
 					.setDescription(`\n${userInList}`);
-        		await interaction.reply({
+				await interaction.reply({
 					embeds: [listEmbed],
 					ephemeral: false
 				});
-        	break;
-    	}	
+				break;
+		}
 	},
+
 };
