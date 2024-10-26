@@ -39,12 +39,12 @@ module.exports = {
             if (buttonInteraction.customId === "confirm") {
                 const inactiveUsers = await getInactiveUsers(); // Await the function
                 const purgedUsers = [];
-                console.log("Inactive Users:", inactiveUsers);
+                // console.log("Inactive Users:", inactiveUsers); For testing
 
-                if (!(inactiveUsers instanceof Map)) {
-                    console.error("Error: inactiveUsers is not a Map");
-                    return;
-                }
+                // if (!(inactiveUsers instanceof Map)) {
+                //     console.error("Error: inactiveUsers is not a Map");
+                //     return;
+                // } For testing
 
                 for (const [userId, userData] of inactiveUsers.entries()) { // Iterate over the Map
                     const member = interaction.guild.members.cache.get(userId);

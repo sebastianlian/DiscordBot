@@ -5,6 +5,7 @@ const cors = require('cors'); // Import cors
 const bot = require('../index');
 const { inactiveDB } = require('../models/inactivitySchema');
 const UserActivity = require('../models/userActivitySchema'); // Ensure correct path to your schema file
+const { PurgeHistory } = require('../models/purgeHistorySchema');
 
 const app = express();
 const PORT = process.env.PORT || 5011;
@@ -49,6 +50,30 @@ app.get('/useractivity', async (req, res) => {
     } catch (error) {
         console.error('Error fetching user activities:', error);
         res.status(500).json({ message: 'Server error' });
+    }
+});
+
+app.get('/api/purge-history', async (req, res) => {
+    console.log('Received request for purge history');
+    try {
+        const purgeHistory = await PurgeHistory.find()
+            .sort({ executionDate: -1 })
+            .limit(3)
+            .lean({ virtuals: true });  // This ensures virtual properties are included
+
+        console.log('Fetched purge history:', purgeHistory);
+
+        const sanitizedPurgeHistory = purgeHistory.map(entry => ({
+            username: entry.username || 'Unknown user',
+            executionDate: entry.executionDate || new Date(),
+            purgedUsers: Array.isArray(entry.purgedUsers) ? entry.purgedUsers : []
+        }));
+
+        console.log('Sending purge history:', sanitizedPurgeHistory);
+        res.json(sanitizedPurgeHistory);
+    } catch (error) {
+        console.error('Error fetching purge history:', error);
+        res.status(500).json({ error: 'Failed to fetch purge history' });
     }
 });
 

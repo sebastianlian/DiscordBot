@@ -3,14 +3,25 @@ const mongoose = require('mongoose');
 const purgeHistorySchema = new mongoose.Schema({
     userId: { type: String, required: true },
     username: { type: String, required: true },
+    executorUsername: { type: String, required: true },
     executionDate: { type: Date, default: Date.now },
-    purgedCount: { type: Number, required: true },
-    purgedUsers: [{ 
+    purgedUsers: [{
         userId: { type: String, required: true },
         username: { type: String, required: true }
     }]
 });
 
+//Virtual prop used because I don't want to mess up the database with how the data is already set in there and its only the frontend that needs this info anyway
+
+// Add a virtual property for purgedCount
+purgeHistorySchema.virtual('purgedCount').get(function() {
+    return this.purgedUsers.length;
+});
+
+// Ensure virtuals are included when converting document to JSON
+purgeHistorySchema.set('toJSON', { virtuals: true });
+purgeHistorySchema.set('toObject', { virtuals: true });
+
 const PurgeHistory = mongoose.model('PurgeHistory', purgeHistorySchema);
 
-module.exports = PurgeHistory;
+module.exports = { PurgeHistory };
