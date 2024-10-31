@@ -109,6 +109,7 @@ async function trackAndLogTextChannelActivity(channel) {
         }
 
         for (const [userId, activity] of userActivities.entries()) {
+            userActivitiesMap.set(userId, activity);
             const userActivity = await UserActivity.findOne({ userId: userId, channelName: channel.name });
 
             // Check if the new lastActive is more recent before updating

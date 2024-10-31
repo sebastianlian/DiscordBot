@@ -3,7 +3,10 @@ const { blackListDB } = require("../models/blacklistSchema");
 const { inactiveDB } = require("../models/inactivitySchema");
 const { getChalk } = require('../utility/utils'); // Adjust the path accordingly
 
-const INACTIVITY_TIMER = 24 * 60 * 60 * 1000; // 168 hours
+// const INACTIVITY_TIMER = 24 * 60 * 60 * 1000; // 168 hours
+const INACTIVITY_TIMER = 12 * 60 * 60 * 1000; // 12 hours
+// const INACTIVITY_TIMER = 3 * 60 * 1000; // 3 minutes
+
 const activeUsers = new Map(); // Use Map for user tracking
 
 /*
@@ -23,11 +26,8 @@ const recentlyActiveUsers = new Set();
 
 // Database Operations
 async function addOrUpdateInactivityDB(userId, userName, lastActive, lastMessage) {
-  const chalk = getChalk(); // Get the chalk instance
-
-  // new code starts here
+  const chalk = getChalk();
   console.log(chalk.cyan(`Attempting to update inactivity database for user: ${userName} (${userId})`));
-  // new code ends here
 
   try {
     const messageDate = new Date(lastActive);
@@ -36,29 +36,27 @@ async function addOrUpdateInactivityDB(userId, userName, lastActive, lastMessage
       throw new Error('userName is required');
     }
 
-    // Check if the user was recently active
+    // Log recent activity check
+    console.log(`Checking recently active status for user ${userName} (${userId})`);
+
     if (recentlyActiveUsers.has(userId)) {
       console.log(chalk.yellow(`User ${userName} (${userId}) was recently active. Skipping inactivity DB update.`));
       return false;
     }
 
-    const result = await inactiveDB.findOneAndUpdate(
+    let result = await inactiveDB.findOneAndUpdate(
         { userId: userId.toString() },
-        { userName, lastMessageDate: messageDate, lastMessage: lastMessage }, // new code here
+        { userName, lastMessageDate: messageDate, lastMessage: lastMessage },
         { upsert: true, new: true }
     );
 
-    // // new code starts
-    // console.log(`Update result:`, result); // Log the result
-    // // new code ends
-
     if (result) {
-      console.log(chalk.green(`Successfully updated user ${userName} in inactivity database.`));
-      return true;
+      console.log(chalk.green(`Successfully added or updated user ${userName} (${userId})`));
     } else {
-      console.log(chalk.red(`Failed to update user ${userName} (${userId}) in inactivity database.`));
-      return false;
+      console.log(chalk.red(`Failed to add or update user ${userName} (${userId})`));
     }
+
+    return true;
   } catch (error) {
     console.error('Error updating inactivity data:', error);
     return false;
@@ -180,12 +178,22 @@ async function checkAndUpdateInactiveUsers() {
   // Check user activities and update inactivity records
   for (const [userId, activity] of userActivitiesMap.entries()) {
     try {
+      // Check if user is inactive based on INACTIVITY_TIMER
       if (currentTime - activity.lastActive > INACTIVITY_TIMER) {
-        const success = await addOrUpdateInactivityDB(userId, activity.userName, activity.lastActive);
-        if (success) {
-          console.log(chalk.green(`Successfully updated inactivity record for user ${activity.userName} (${userId}).`));
+        // Check if the user already exists in inactiveDB
+        const userExists = await inactiveDB.findOne({ userId: userId.toString() });
+
+        if (!userExists) {
+          // Add the user to inactiveDB as they are inactive
+          const success = await addOrUpdateInactivityDB(userId, activity.userName, activity.lastActive, activity.lastMessage);
+          if (success) {
+            console.log(chalk.green(`User ${activity.userName} (${userId}) added to inactivity database.`));
+          }
+        } else {
+          console.log(chalk.cyan(`User ${activity.userName} (${userId}) already exists in inactivity database.`));
         }
       } else {
+        // User is active, so add/update them in activeUsers map
         activeUsers.set(userId, {
           id: userId,
           userName: activity.userName,
@@ -230,6 +238,7 @@ async function checkAndUpdateInactiveUsers() {
     console.error(chalk.red('Error removing active users from inactivity database:', error));
   }
 }
+
 
 
 module.exports = {
