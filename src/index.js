@@ -7,7 +7,7 @@ const { Client, IntentsBitField, GatewayIntentBits, Collection } = require('disc
 
 // Import custom functions for channel management, inactivity database, and activity checks
 const { storeChannels, refreshLatestMessages } = require('./functions/channelManager'); // Adjust the path accordingly
-const { checkAndUpdateInactiveUsers, logActiveUsersMap, trackUserActivity} = require('./functions/inactivity'); // Adjust the path accordingly
+const { checkAndUpdateInactiveUsers, trackUserActivity, refreshInactiveUsers, loadUserActivityOnStartup} = require('./functions/inactivity'); // Adjust the path accordingly
 const { getChalk } = require('./utility/utils');
 
 // Import Node.js filesystem module for file operations
@@ -20,7 +20,7 @@ global.client = new Client({
         IntentsBitField.Flags.Guilds, // Required to receive guild events
         IntentsBitField.Flags.GuildMessages, // Required to receive message events
         IntentsBitField.Flags.MessageContent, // Required to access message content
-        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildVoiceStates, // Required to access voice states
         GatewayIntentBits.GuildMessageReactions, // Required to access reaction event
     ]
 });
@@ -67,7 +67,13 @@ client.on('ready', async (clientInstance) => {
         console.log(chalk.red('DB is disconnected'));
     }
 
-    // Call storeChannels to save channel information in the database - (channels)
+    // Step 1: Load existing user activity from the database
+    await loadUserActivityOnStartup();
+
+    // Step 2: Refresh inactive users based on loaded activity
+    await refreshInactiveUsers();
+
+    // Step 3: Store channel information in the database
     await storeChannels(client);
 
     // DO NOT DELETE OR REMOVE ANY FUNCTION CALLS
@@ -79,7 +85,7 @@ client.on('ready', async (clientInstance) => {
 });
 
 // Log the bot token for debugging
-console.log('Bot Token:', process.env.TOKEN); // Debugging line
+// console.log('Bot Token:', process.env.TOKEN); // Debugging line
 
 // Log in to Discord using the token from environment variables
 client.login(process.env.TOKEN)
