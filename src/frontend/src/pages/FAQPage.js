@@ -1,11 +1,12 @@
 import React from 'react';
 import Navbar from "../components/Navbar";
-import { Container, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import '../App.css'; // Import your CSS file
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../App.css'; // Import any additional CSS
 
 const FAQPage = () => {
-    console.log("FAQ Page Rendered"); // Debugging log
+    console.log("FAQ Page Rendered");
 
     const commands = [
         '/help - Lists out all the different configuration commands for the bot.',
@@ -22,30 +23,32 @@ const FAQPage = () => {
     return (
         <>
             <Navbar />
-            <Container maxWidth="lg" sx={{ marginTop: '2rem' }}>
-                <Typography variant="h4" component="h1" align="center" gutterBottom>
-                    FAQ
-                </Typography>
+            <div className="container mt-4">
+                <h2 className="text-center mb-4">FAQ</h2>
 
-                <Accordion>
+                <Accordion className="mb-3">
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="commands-content"
                         id="commands-header"
                     >
-                        <Typography variant="h7">What are the commands I can use with the bot?</Typography>
+                        <h6 className="mb-0">What are the commands I can use with the bot?</h6>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <div>
+                        <div className="row">
                             {commands.map((command, index) => (
-                                <Typography key={index} variant="body1">
-                                    {command}
-                                </Typography>
+                                <div className="col-md-6 col-lg-4 mb-3" key={index}>
+                                    <div className="card h-100">
+                                        <div className="card-body">
+                                            <p className="card-text">{command}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </AccordionDetails>
                 </Accordion>
-            </Container>
+            </div>
         </>
     );
 };

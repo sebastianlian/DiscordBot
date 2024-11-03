@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Navbar from "../components/Navbar";
-import { Container, Typography, Box } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { Typography } from '@mui/material';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AccountPage = () => {
-
     return (
         <>
             <Navbar />
-            <Container maxWidth="lg" sx={{ marginTop: '2rem' }}>
-                <Typography variant="h4" component="h1" align="center" gutterBottom>
-                    Account Details
-                </Typography>
-            </Container>
+            <div className="container my-5">
+                <div className="row justify-content-center">
+                    <div className="col-lg-8">
+                        <Typography variant="h4" component="h1" align="center" className="mb-4">
+                            Account Details
+                        </Typography>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };

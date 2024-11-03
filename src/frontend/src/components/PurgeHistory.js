@@ -42,10 +42,10 @@ function PurgeHistory() {
     };
 
     return (
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div className="container mt-4">
             <Typography
                 variant="h4"
-                gutterBottom
+                className="text-center mb-4"
                 sx={{
                     mb: 3,
                     textAlign: 'center',
@@ -56,28 +56,23 @@ function PurgeHistory() {
                 Purge History
             </Typography>
 
-            <Box sx={{
-                flexGrow: 1,
-                overflowY: 'auto',
-                maxHeight: '400px',
-                minHeight: '200px'
-            }}>
+            <Box className="row justify-content-center">
+                <div className="col-md-8">
                 {loading ? (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                    <div className="d-flex justify-content-center align-items-center" style={{ height: '200px' }}>
                         <CircularProgress />
-                    </Box>
+                    </div>
                 ) : error ? (
-                    <Typography color="error">{error}</Typography>
+                    <Typography color="error" className="text-center">{error}</Typography>
                 ) : purgeHistory.length === 0 ? (
                     <Typography>No purge history available.</Typography>
                 ) : (
-                    <Box sx={{
-                        '& > :not(:last-child)': { mb: 2 }
-                    }}>
-                        {purgeHistory.slice(0, 3).map((purge, index) => (
+                    <Box className="overflow-auto" style={{ maxHeight: '400px' }}>
+                    {purgeHistory.slice(0, 3).map((purge, index) => (
                             <Paper
                                 key={index}
                                 elevation={1}
+                                className="mb-3 p-3"
                                 sx={{
                                     p: 2,
                                     bgcolor: '#f5f0e6',  // Beige background color
@@ -87,7 +82,7 @@ function PurgeHistory() {
                                     }
                                 }}
                             >
-                                <Typography variant="subtitle1" component="div" sx={{ color: '#2c2c2c' }}>
+                                <Typography variant="subtitle1" sx={{ color: '#2c2c2c' }}>
                                     <strong>{purge.username}</strong> purged {purge.purgedUsers?.length || 0} users
                                 </Typography>
                                 <Typography variant="body2" sx={{ color: '#666' }}>
@@ -97,8 +92,9 @@ function PurgeHistory() {
                         ))}
                     </Box>
                 )}
+                </div>
             </Box>
-        </Box>
+        </div>
     );
 }
 
