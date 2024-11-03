@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from "../components/Navbar";
-import { Container, Typography, Box, Button } from '@mui/material';
+import { Typography, Box, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is imported
 import '../App.css';
 
 const UserActivityPage = () => {
@@ -85,33 +86,36 @@ const UserActivityPage = () => {
     return (
         <>
             <Navbar />
-            <Container maxWidth="lg" sx={{ marginTop: '2rem' }}>
-                <Typography variant="h4" component="h1" align="center" gutterBottom>
+            <div className="container my-4"> {/* Bootstrap container for spacing */}
+                <Typography variant="h4" className="text-center mb-4">
                     User Activity Log
                 </Typography>
 
-                <Box sx={{ marginTop: '2rem', height: 800, width: '100%' }}>
-                    {userActivities.length > 0 ? (
-                        <DataGrid
-                            rows={userActivities}
-                            columns={columns}
-                            pageSize={5}
-                            rowsPerPageOptions={[5]}
-                            getRowId={(row) => row._id}
-                        />
-                    ) : (
-                        <Typography variant="body1" align="center">
-                            No user activities found.
-                        </Typography>
-                    )}
-                </Box>
-
-                <Box display="flex" justifyContent="center" mt={2}> {/* Centered Refresh Button */}
-                    <Button variant="contained" onClick={fetchUserActivities}>
-                        Refresh
-                    </Button>
-                </Box>
-            </Container>
+                <div className="row justify-content-center"> {/* Bootstrap row for alignment */}
+                    <div className="col-md-10">
+                        <Box sx={{ height: 800, width: '100%' }}>
+                            {userActivities.length > 0 ? (
+                                <DataGrid
+                                    rows={userActivities}
+                                    columns={columns}
+                                    pageSize={5}
+                                    rowsPerPageOptions={[5]}
+                                    getRowId={(row) => row._id}
+                                />
+                            ) : (
+                                <Typography variant="body1" className="text-center">
+                                    No user activities found.
+                                </Typography>
+                            )}
+                        </Box>
+                        <div className="d-flex justify-content-center mt-3"> {/* Centered Refresh Button */}
+                            <Button variant="contained" onClick={fetchUserActivities}>
+                                Refresh
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };

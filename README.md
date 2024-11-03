@@ -140,3 +140,6 @@ https://github.com/GGC-SD/DiscordBot.git
 ## Project Flyer & Video
 - Flyer here
 - Video link here
+
+## License
+<a href="https://github.com/GGC-SD/DiscordBot">BashBot</a> © 2024 by <a href="https://github.com/GGC-SD/DiscordBot/graphs/contributors" target="_blank">Sebastian L. Carmagnola, Najee Douglas, Etienne Laccruche, Jonathan Hummel, Anca Doloc Mihu, David Rivera, Mike Deiters</a> is licensed under the <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a>. See the [LICENSE](./documents/docs-Fall2024/License.md) file for details.

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from "../components/Navbar";
-import { Container, Typography, TextField, Button, Box } from '@mui/material';
+import { Typography, TextField, Button } from '@mui/material';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -9,7 +10,6 @@ const LoginPage = () => {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        // Handle login logic here, e.g., API call to authenticate user
         console.log('Email:', email);
         console.log('Password:', password);
     };
@@ -17,59 +17,56 @@ const LoginPage = () => {
     return (
         <>
             <Navbar />
-            <Container maxWidth="sm" sx={{ marginTop: '2rem' }}>
-                <Typography variant="h4" component="h1" align="center" gutterBottom>
-                    Login
-                </Typography>
-                <Box
-                    component="form"
-                    onSubmit={handleLogin}
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '1rem',
-                    }}
-                >
-                    <TextField
-                        label="Email"
-                        variant="outlined"
-                        fullWidth
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <TextField
-                        label="Password"
-                        type="password"
-                        variant="outlined"
-                        fullWidth
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        sx={{ width: '100%' }}
-                    >
-                        Login
-                    </Button>
-                    <Typography variant="body2" align="center">
-                        Don't have an account?
-                    </Typography>
-                    <Button
-                        component={Link}
-                        to="/signup"  // Update the route according to your app's routing
-                        variant="outlined"
-                        color="primary"
-                        sx={{ width: '100%' }}
-                    >
-                        Sign Up
-                    </Button>
-                </Box>
-            </Container>
+            <div className="container my-5"> {/* Bootstrap container for centering and spacing */}
+                <div className="row justify-content-center">
+                    <div className="col-md-6"> {/* Set form width with Bootstrap grid */}
+                        <Typography variant="h4" component="h1" align="center" className="mb-4">
+                            Login
+                        </Typography>
+                        <form onSubmit={handleLogin} className="d-flex flex-column align-items-center">
+                            <TextField
+                                label="Email"
+                                variant="outlined"
+                                fullWidth
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="mb-3"
+                            />
+                            <TextField
+                                label="Password"
+                                type="password"
+                                variant="outlined"
+                                fullWidth
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="mb-3"
+                            />
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                className="w-100 mb-3"
+                            >
+                                Login
+                            </Button>
+                            <Typography variant="body2" align="center" className="mb-2">
+                                Don't have an account?
+                            </Typography>
+                            <Button
+                                component={Link}
+                                to="/signup"
+                                variant="outlined"
+                                color="primary"
+                                className="w-100"
+                            >
+                                Sign Up
+                            </Button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };

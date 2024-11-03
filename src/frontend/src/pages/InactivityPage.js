@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from "../components/Navbar";
-import { Container, Typography, Box, Button } from '@mui/material';
+import { Typography, Box, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is available
 import '../App.css';
 
 const InactivityPage = () => {
     const [inactiveUsers, setInactiveUsers] = useState([]);
 
-    // Function to fetch inactive users
     const fetchInactiveUsers = async () => {
         try {
             const response = await fetch('http://localhost:5011/inactivity');
@@ -22,12 +22,10 @@ const InactivityPage = () => {
         }
     };
 
-    // useEffect to load data on initial render
     useEffect(() => {
         fetchInactiveUsers();
     }, []);
 
-    // Define columns for the DataGrid
     const columns = [
         { field: 'userName', headerName: 'User Name', flex: 1 },
         {
@@ -44,31 +42,35 @@ const InactivityPage = () => {
     return (
         <>
             <Navbar />
-            <Container sx={{ marginTop: '2rem', maxWidth: 'md' }}>
-                <Typography variant="h4" component="h1" align="center" gutterBottom>
+            <div className="container my-4"> {/* Bootstrap container */}
+                <Typography variant="h4" className="text-center mb-4">
                     Inactive Users
                 </Typography>
-                {inactiveUsers.length > 0 ? (
-                    <Box sx={{ height: 400, marginBottom: '1rem' }}>
-                        <DataGrid
-                            rows={inactiveUsers}
-                            columns={columns}
-                            pageSize={5}
-                            rowsPerPageOptions={[5]}
-                            getRowId={(row) => row.userId}
-                        />
-                    </Box>
-                ) : (
-                    <Typography variant="body1" align="center">
-                        No inactive users found.
-                    </Typography>
-                )}
-                <Box display="flex" justifyContent="center" mt={2}> {/* Moved Button Here */}
-                    <Button variant="contained" onClick={fetchInactiveUsers}>
-                        Refresh
-                    </Button>
-                </Box>
-            </Container>
+                <div className="row justify-content-center"> {/* Bootstrap row for centering */}
+                    <div className="col-md-8">
+                        {inactiveUsers.length > 0 ? (
+                            <Box sx={{ height: 400, marginBottom: '1rem' }}>
+                                <DataGrid
+                                    rows={inactiveUsers}
+                                    columns={columns}
+                                    pageSize={5}
+                                    rowsPerPageOptions={[5]}
+                                    getRowId={(row) => row.userId}
+                                />
+                            </Box>
+                        ) : (
+                            <Typography variant="body1" className="text-center">
+                                No inactive users found.
+                            </Typography>
+                        )}
+                        <div className="d-flex justify-content-center mt-2"> {/* Bootstrap utility classes for centering */}
+                            <Button variant="contained" onClick={fetchInactiveUsers}>
+                                Refresh
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };
