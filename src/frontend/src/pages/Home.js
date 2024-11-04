@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { Container, Typography, Paper, Divider } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 
@@ -13,7 +14,7 @@ const Home = () => {
                         Welcome
                     </Typography>
                     <Typography variant="h5" className="text-secondary mb-4">
-                        Your ultimate solution for managing Discord server activity
+                        Your ultimate solution for managing your automated Discord server activity
                     </Typography>
                 </div>
 
@@ -22,34 +23,30 @@ const Home = () => {
                     <div className="col-md-8 col-lg-6"> {/* Bootstrap columns for responsive sizing */}
                         <Paper elevation={5} className="p-4 rounded-3">
                             <Typography variant="h4" align="center" gutterBottom>
-                                About the Automated Discord Bot
+                                About
                             </Typography>
                             <Divider className="my-3" />
 
                             <Typography variant="body1" className="text-justify mb-3">
-                                This automated Discord bot is designed to help manage and maintain your Discord server with ease. It includes features such as inactivity tracking, automated responses, purging, blacklisting, and user management.
+                                This automated Discord bot is designed to help manage and maintain your Discord server with ease. It includes features such as user activity tracking, inactivity tracking, automated responses, purging, blacklisting, user management and bot setting management.
                             </Typography>
                             <Typography variant="body1" className="text-justify mb-3">
                                 Our goal is to enhance the Discord experience by automating repetitive tasks and improving community engagement.
                             </Typography>
-                            <Typography variant="body1" className="text-justify">
-                                If you have any questions or suggestions, feel free to reach out through our support channels.
+                            <Typography variant="body1" className="text-justify mb-3">
+                                If you have any questions or suggestions, feel free check out our{' '}
+                                <a href="/faq" className="text-primary text-decoration-underline">
+                                    FAQ
+                                </a> page.
                             </Typography>
+
                         </Paper>
                     </div>
                 </div>
             </div>
 
-            {/* Footer Section */}
-            <footer style={{ textAlign: 'center', marginTop: '20px', padding: '10px', fontSize: '0.9em', color: '#777' }}>
-                <Typography variant="body2">
-                    © 2024 BashBot. All rights reserved.
-                </Typography>
-                <Typography variant="body2">
-                    This project is licensed under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">MIT License</a>.
-                </Typography>
-            </footer>
-
+            {/* Reusable Footer Component */}
+            <Footer />
         </div>
     );
 };
