@@ -16,10 +16,16 @@ const Theme = createTheme({
             fontWeight: 500,
             textAlign: 'center',
             color: '#3C3D37',
+            fontFamily: '"Press Start 2P", cursive',
         },
         h4: {
+            fontFamily: '"Press Start 2P", cursive',
             fontWeight: 500,
             color: '#697565',
+            textTransform: 'uppercase', // Transform text to uppercase
+        },
+        h5: {
+            fontStyle: 'italic', // Example: make the font italic
         },
         h6: {
             fontFamily: '"Press Start 2P", cursive',
@@ -28,6 +34,10 @@ const Theme = createTheme({
             color: 'white',
             textTransform: 'uppercase',
             letterSpacing: '0.1rem',
+        },
+        h7 : {
+            fontWeight: 'bold',
+
         },
         body1: {
             lineHeight: 1.5,

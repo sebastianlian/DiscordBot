@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { Typography, TextField, Button } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap
 
@@ -67,6 +68,10 @@ const LoginPage = () => {
                     </div>
                 </div>
             </div>
+
+
+            {/* Reusable Footer Component */}
+            <Footer />
         </>
     );
 };
