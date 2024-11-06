@@ -1,10 +1,10 @@
-const blacklistSchema = require("../models/blacklistSchema");
+const { blackListDB } = require('../models/blacklistSchema'); // Ensure correct path
 const { userMention } = require('discord.js');
 
 async function removeBlacklistDB(userid, userTag) {
     const userIdString = userid.toString(); // Ensure the user ID is a string
     const mentionedUser = userMention(userid); // Get the mention for the user
-    const doc = await blacklistSchema.blackListDB.findOne();
+    const doc = await blackListDB.findOne();
 
     // Check if the blacklist document exists
     if (doc) {
@@ -13,7 +13,7 @@ async function removeBlacklistDB(userid, userTag) {
 
         if (userExists) {
             // Remove the user from the blacklist
-            await blacklistSchema.blackListDB.updateOne(
+            await blackListDB.updateOne(
                 {},
                 { $pull: { blackListedUsers: { userId: userIdString } } }
             );
