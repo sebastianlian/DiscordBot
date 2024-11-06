@@ -6,6 +6,8 @@ const bot = require('../index');
 const { inactiveDB } = require('../models/inactivitySchema');
 const UserActivity = require('../models/userActivitySchema'); // Ensure correct path to your schema file
 const { PurgeHistory } = require('../models/purgeHistorySchema');
+const { blackListDB } = require('../models/blacklistSchema'); // Adjust path if necessary
+// console.log('blackListDB model:', blackListDB);
 
 const app = express();
 const PORT = process.env.PORT || 5011;
@@ -19,6 +21,9 @@ mongoose.connect(databaseToken)
 
 // Enable CORS for all routes
 app.use(cors());
+
+// Enable JSON parsing middleware
+app.use(express.json());
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
@@ -80,6 +85,80 @@ app.get('/api/purge-history', async (req, res) => {
 app.get('/faq', async (req, res) => {
     console.log('FAQ populated'); // Add this log to ensure the route is hit
 });
+
+app.get('/blacklist', async (req, res) => {
+    console.log('Received request for blacklist data');
+    try {
+        const doc = await blackListDB.findOne();
+        console.log('Fetched document from MongoDB:', doc); // This log should print the document
+
+        const blacklistedUsers = doc ? doc.blackListedUsers : [];
+        res.json(blacklistedUsers);
+    } catch (error) {
+        console.error('Error fetching blacklist:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+// POST /blacklist/add - Adds a user to the blacklist
+app.post('/blacklist/add', async (req, res) => {
+    const { userId, userName } = req.body;
+    if (!userId || !userName) {
+        return res.status(400).json({ message: 'User ID and User Name are required' });
+    }
+
+    try {
+        // Check if a blacklist document exists; create one if not
+        let doc = await blackListDB.findOne();
+        if (!doc) {
+            doc = await blackListDB.create({ blackListedUsers: [] });
+        }
+
+        // Add the user to the blacklist using $addToSet to prevent duplicates
+        await blackListDB.updateOne(
+            {},
+            { $addToSet: { blackListedUsers: { userId, userName } } }
+        );
+
+        console.log(`User ${userId} added to the blacklist.`);
+        res.json({ message: 'User added to the blacklist' });
+    } catch (error) {
+        console.error('Error adding user to blacklist:', error);
+        res.status(500).json({ message: 'Failed to add user to blacklist' });
+    }
+});
+
+// POST /blacklist/remove - Removes a user from the blacklist
+app.post('/blacklist/remove', async (req, res) => {
+    console.log('Request body:', req.body); // Debugging line to check request data
+
+    const { userId } = req.body; // Now req.body should have data
+    if (!userId) {
+        console.log('User ID not found in request body');
+        return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    try {
+        const result = await blackListDB.updateOne(
+            {},
+            { $pull: { blackListedUsers: { userId } } }
+        );
+
+        if (result.modifiedCount > 0) {
+            console.log(`User ${userId} removed from the blacklist.`);
+            res.json({ message: 'User removed from the blacklist' });
+        } else {
+            console.log(`User ${userId} not found in the blacklist.`);
+            res.status(404).json({ message: 'User not found in blacklist' });
+        }
+    } catch (error) {
+        console.error('Error removing user from blacklist:', error);
+        res.status(500).json({ message: 'Failed to remove user from blacklist' });
+    }
+});
+
+
+
 
 
 // Start the bot

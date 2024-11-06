@@ -1,5 +1,5 @@
 const { User } = require("discord.js");
-const blacklistSchema = require("../models/blacklistSchema");
+const { blackListDB } = require('../models/blacklistSchema'); // Ensure correct path
 
 
 async function insertBlacklistDB(userid, username) {
@@ -10,18 +10,18 @@ async function insertBlacklistDB(userid, username) {
 
     const userIdString = userid.toString();
     const userNameString = username.toString();
-    const doc = await blacklistSchema.blackListDB.findOne();
+    const doc = await blackListDB.findOne();
 
     if (doc) {
         // Update the existing document by adding the user object to the array
-        await blacklistSchema.blackListDB.updateOne(
+        await blackListDB.updateOne(
             {},
             { $addToSet: { blackListedUsers: { userId: userIdString, userName: userNameString } } }
         );
         console.log(`User ${userIdString} has been blacklisted.`);
     } else {
         // Create a new document with the first user object
-        await blacklistSchema.blackListDB.create({
+        await blackListDB.create({
             blackListedUsers: [{ userId: userIdString, userName: userNameString }]
         });
         console.log(`New Schema has been created with ${userIdString} ${userNameString} as the first value.`);
