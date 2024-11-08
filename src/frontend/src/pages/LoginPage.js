@@ -1,9 +1,12 @@
+// Login page to access dashboard - not sure if it needs to be adjusted to authenticate admin user
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Typography, TextField, Button } from '@mui/material';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../themes/Themes.js'; // Adjust the path as necessary
+
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -18,9 +21,9 @@ const LoginPage = () => {
     return (
         <>
             <Navbar />
-            <div className="container my-5"> {/* Bootstrap container for centering and spacing */}
+            <div className="container my-5">
                 <div className="row justify-content-center">
-                    <div className="col-md-6"> {/* Set form width with Bootstrap grid */}
+                    <div className="col-md-6">
                         <Typography variant="h4" component="h1" align="center" className="mb-4">
                             Login
                         </Typography>
@@ -68,7 +71,6 @@ const LoginPage = () => {
                     </div>
                 </div>
             </div>
-
 
             {/* Reusable Footer Component */}
             <Footer />

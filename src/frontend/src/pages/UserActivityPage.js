@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Navbar from "../components/Navbar";
 import { Typography, Box, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is imported
-import '../App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UserActivityPage = () => {
     const [userActivities, setUserActivities] = useState([]);
@@ -85,37 +84,46 @@ const UserActivityPage = () => {
 
     return (
         <>
-            <Navbar />
-            <div className="container my-4"> {/* Bootstrap container for spacing */}
-                <Typography variant="h4" className="text-center mb-4">
-                    User Activity Log
-                </Typography>
+        <Navbar/>
+        <div className="container my-4">
+            <Typography variant="h4" className="text-center mb-4">
+                User Activity Log
+            </Typography>
 
-                <div className="row justify-content-center"> {/* Bootstrap row for alignment */}
-                    <div className="col-md-10">
-                        <Box sx={{ height: 800, width: '100%' }}>
-                            {userActivities.length > 0 ? (
-                                <DataGrid
-                                    rows={userActivities}
-                                    columns={columns}
-                                    pageSize={5}
-                                    rowsPerPageOptions={[5]}
-                                    getRowId={(row) => row._id}
-                                />
-                            ) : (
-                                <Typography variant="body1" className="text-center">
-                                    No user activities found.
-                                </Typography>
-                            )}
-                        </Box>
-                        <div className="d-flex justify-content-center mt-3"> {/* Centered Refresh Button */}
-                            <Button variant="contained" onClick={fetchUserActivities}>
-                                Refresh
-                            </Button>
-                        </div>
+            <div className="container">
+                <Typography variant="body1" className="text-secondary mb-4 justified-text">
+                    This table provides an overview of user activity within the application, including their latest
+                    messages, reactions, and voice interactions. Use the headers of the table which are toggleable
+                    to quickly find specific users or review their recent activities. To refresh the table toggle
+                    the refresh button below the table.
+                </Typography>
+            </div>
+
+            <div className="row justify-content-center">
+                <div className="col-md-10">
+                    <Box sx={{height: 800, width: '100%'}}>
+                        {userActivities.length > 0 ? (
+                            <DataGrid
+                                rows={userActivities}
+                                columns={columns}
+                                pageSize={5}
+                                rowsPerPageOptions={[5]}
+                                getRowId={(row) => row._id}
+                            />
+                        ) : (
+                            <Typography variant="body1" className="text-center">
+                                No user activities found.
+                            </Typography>
+                        )}
+                    </Box>
+                    <div className="d-flex justify-content-center mt-3"> {/* Centered Refresh Button */}
+                        <Button variant="contained" onClick={fetchUserActivities}>
+                            Refresh
+                        </Button>
                     </div>
                 </div>
             </div>
+        </div>
         </>
     );
 };

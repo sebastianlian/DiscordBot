@@ -1,3 +1,4 @@
+// TODO: Need to find a way to have the admin add new users to the blacklist
 import React, { useEffect, useState } from 'react';
 import Navbar from "../components/Navbar";
 import { Typography, Box, Button } from '@mui/material';
@@ -8,7 +9,7 @@ const BlacklistPage = () => {
     const [blacklistedUsers, setBlacklistedUsers] = useState([]);
     const [selectedUserIds, setSelectedUserIds] = useState([]);
 
-    // Fetch blacklisted users from the server
+    // unction to handle fetching blacklisted users from the server
     const fetchBlacklistedUsers = async () => {
         try {
             const response = await fetch('http://localhost:5011/blacklist');
@@ -38,14 +39,14 @@ const BlacklistPage = () => {
         console.log("Selected User IDs Updated:", selectedUserIds);
     }, [selectedUserIds]);
 
-    const columns = [
-
+    const blacklistUserColumns = [
         { field: 'userName', headerName: 'User Name', flex: 1 },
         { field: 'userId', headerName: 'User ID', flex: 1 }
     ];
 
+    // Function to handle user removal from blacklisted users db
     const handleRemoveSelected = async () => {
-        console.log("Inside handleRemoveSelected function");
+        // console.log("Inside handleRemoveSelected function"); // Debug line to ensure handleRemoveSelected is firing
         const usersToRemove = [...selectedUserIds]; // Copy current state to a constant
         console.log("Users to remove:", usersToRemove);
 
@@ -75,6 +76,7 @@ const BlacklistPage = () => {
             console.error("Error removing selected users:", error);
         }
     };
+
     return (
         <>
             <Navbar />
@@ -82,31 +84,39 @@ const BlacklistPage = () => {
                 <Typography variant="h4" align="center" gutterBottom>
                     Blacklisted Users
                 </Typography>
+
+                <div className="container">
+                    <Typography variant="body1" className="text-secondary mb-4 justified-text">
+                        This page provides an overview of all blacklisted users within the application. You can review
+                        and manage blacklisted entries using the table below, which displays user details such as their name and ID.
+                        Select users from the table to remove them from the blacklist. If a user is removed you must refresh
+                        the table to ensure the latest information is displayed.
+                    </Typography>
+
+                </div>
+
                 <div className="row justify-content-center">
                     <div className="col-md-8">
                         {blacklistedUsers.length > 0 ? (
-                            <Box sx={{ height: 400, marginBottom: '1rem' }}>
-                                <div onClick={() => console.log("Div clicked")}>
-                                    <DataGrid
-                                        rows={blacklistedUsers}
-                                        columns={columns}
-                                        pageSize={5}
-                                        checkboxSelection
-                                        disableSelectionOnClick
-                                        getRowId={(row) => row.userId}
-                                        onRowSelectionModelChange={(newSelectionModel) => {
-                                            console.log("New Selection Model (raw):", newSelectionModel); // Check the raw event
-
-                                            // Ensure newSelectionModel is an array before updating state
-                                            if (Array.isArray(newSelectionModel)) {
-                                                console.log("Setting selectedUserIds:", newSelectionModel);
-                                                setSelectedUserIds(newSelectionModel);
-                                            } else {
-                                                console.error("Expected an array for selection model but got:", newSelectionModel);
-                                            }
-                                        }}
-                                    />
-                                </div>
+                            <Box sx={{height: 400, marginBottom: '1rem'}}>
+                                <DataGrid
+                                    rows={blacklistedUsers}
+                                    columns={blacklistUserColumns}
+                                    pageSize={5}
+                                    checkboxSelection
+                                    disableSelectionOnClick
+                                    getRowId={(row) => row.userId}
+                                    onRowSelectionModelChange={(newSelectionModel) => {
+                                        console.log("New Selection Model (raw):", newSelectionModel); // Check the raw event
+                                        // Ensure newSelectionModel is an array before updating state
+                                        if (Array.isArray(newSelectionModel)) {
+                                            console.log("Setting selectedUserIds:", newSelectionModel);
+                                            setSelectedUserIds(newSelectionModel);
+                                        } else {
+                                            console.error("Expected an array for selection model but got:", newSelectionModel);
+                                        }
+                                    }}
+                                />
                             </Box>
                         ) : (
                             <Typography variant="body1" className="text-center">

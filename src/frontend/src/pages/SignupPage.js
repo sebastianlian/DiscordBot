@@ -1,8 +1,9 @@
+// Signup Page - Not sure if this will be necessary since the site is just for admins
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import { Typography, TextField, Button } from '@mui/material';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is imported
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const SignUpPage = () => {
     const [username, setUsername] = useState('');

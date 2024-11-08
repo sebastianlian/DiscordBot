@@ -1,3 +1,4 @@
+// Routes are defined here for access to pages
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
@@ -11,6 +12,7 @@ import SignupPage from "./pages/SignupPage";
 import BlacklistPage from "./pages/BlacklistPage";
 import AccountPage from "./pages/AccountPage";
 import FAQPage from "./pages/FAQPage";
+import RolesPage from "./pages/RolesPage";
 
 function App() {
     return (
@@ -26,6 +28,8 @@ function App() {
                     <Route path="/signup" element={<SignupPage />} />
                     <Route path="/account" element={<AccountPage />} />
                     <Route path="/faq" element={<FAQPage />} />
+                    <Route path="/roles" element={<RolesPage />} />
+
                 </Routes>
             </Router>
         </ThemeProvider>

@@ -1,4 +1,4 @@
-const { blackListDB } = require('../models/blacklistSchema'); // Ensure correct path
+const { blackListDB } = require('../models/blacklistSchema');
 const { userMention } = require('discord.js');
 
 async function removeBlacklistDB(userid, userTag) {

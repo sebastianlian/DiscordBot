@@ -7,8 +7,10 @@ const { Client, IntentsBitField, GatewayIntentBits, Collection } = require('disc
 
 // Import custom functions for channel management, inactivity database, and activity checks
 const { storeChannels, refreshLatestMessages } = require('./functions/channelManager'); // Adjust the path accordingly
-const { checkAndUpdateInactiveUsers, trackUserActivity, refreshInactiveUsers, loadUserActivityOnStartup} = require('./functions/inactivity'); // Adjust the path accordingly
+const { checkAndUpdateInactiveUsers, trackUserActivity, refreshInactiveUsers, loadUserActivityOnStartup} = require('./functions/inactivity');
 const { getChalk } = require('./utility/utils');
+const { logUsersAndRoles } = require('./functions/userInformation');
+
 
 // Import Node.js filesystem module for file operations
 const fs = require('fs');
@@ -17,7 +19,8 @@ const mongoose = require('mongoose');
 // Create a new Discord client instance with specified intents
 global.client = new Client({
     intents: [
-        IntentsBitField.Flags.Guilds, // Required to receive guild events
+        IntentsBitField.Flags.Guilds, // Required to receive guild
+        IntentsBitField.Flags.GuildMembers, // Required for access to guild members
         IntentsBitField.Flags.GuildMessages, // Required to receive message events
         IntentsBitField.Flags.MessageContent, // Required to access message content
         GatewayIntentBits.GuildVoiceStates, // Required to access voice states
@@ -76,6 +79,9 @@ client.on('ready', async (clientInstance) => {
     // Step 3: Store channel information in the database
     await storeChannels(client);
 
+    // Step 4: Log users and their roles
+    await logUsersAndRoles(process.env.GUILD_ID);
+
     // DO NOT DELETE OR REMOVE ANY FUNCTION CALLS
     setInterval(() => {
         checkAndUpdateInactiveUsers();
@@ -84,7 +90,23 @@ client.on('ready', async (clientInstance) => {
     }, 20000); // Check every 20 secs, adjust as needed
 });
 
-// Log the bot token for debugging
+// Event listener for when a member's roles are updated
+client.on('guildMemberUpdate', async (oldMember, newMember) => {
+    try {
+        // Check if the roles have changed
+        if (oldMember.roles.cache.size !== newMember.roles.cache.size ||
+            oldMember.roles.cache.some(role => !newMember.roles.cache.has(role.id))) {
+            console.log(`Roles updated for member: ${newMember.user.tag}`);
+
+            // Update roles in the database for the member
+            await logUsersAndRoles(newMember.guild.id);
+        }
+    } catch (error) {
+        console.error(`Error handling guildMemberUpdate for ${newMember.user.tag}:`, error);
+    }
+});
+
+// Debug log for the bot token for debugging
 // console.log('Bot Token:', process.env.TOKEN); // Debugging line
 
 // Log in to Discord using the token from environment variables

@@ -1,4 +1,4 @@
-// src/components/Footer.js
+// This component is for a reusable footer
 import React from 'react';
 import { Typography } from '@mui/material';
 

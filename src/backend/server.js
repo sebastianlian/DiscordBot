@@ -1,23 +1,29 @@
 require('dotenv').config({ path: `${__dirname}/../.env` }); // Navigate up one level to access the .env file in the src folder
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors'); // Import cors
+const cors = require('cors');
 const bot = require('../index');
 const { inactiveDB } = require('../models/inactivitySchema');
-const UserActivity = require('../models/userActivitySchema'); // Ensure correct path to your schema file
+const UserActivity = require('../models/userActivitySchema');
 const { PurgeHistory } = require('../models/purgeHistorySchema');
-const { blackListDB } = require('../models/blacklistSchema'); // Adjust path if necessary
-// console.log('blackListDB model:', blackListDB);
+const { blackListDB } = require('../models/blacklistSchema');
+const UserSchema = require('../models/userSchema');
 
 const app = express();
 const PORT = process.env.PORT || 5011;
 
 const databaseToken = process.env.databaseToken; // Make sure this is defined in your .env file
-console.log('Database Token:', databaseToken);
+// console.log('Database Token:', databaseToken); // Debugging line for ensuring database connection
 
 mongoose.connect(databaseToken)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
+
+require('dotenv').config({ path: `${__dirname}/../.env` });
+
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
 
 // Enable CORS for all routes
 app.use(cors());
@@ -29,11 +35,7 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-// // Test for mongoose connection in server.js
-// app.get('/', (req, res) => {
-//     res.send('Hello World!');
-// });
-
+// Endpoint to get inactivity
 app.get('/inactivity', async (req, res) => {
     console.log('Received request for inactivity data'); // Log when the route is hit
     try {
@@ -46,8 +48,9 @@ app.get('/inactivity', async (req, res) => {
     }
 });
 
+// Endpoint to get user activity
 app.get('/useractivity', async (req, res) => {
-    console.log('Received request for user activities'); // Add this log to ensure the route is hit
+    console.log('Received request for user activities'); // Logs to ensure the route is hit
     try {
         const userActivitiesData = await UserActivity.find(); // Fetch all user activities
         console.log('User Activities Data:', userActivitiesData); // Log fetched data
@@ -58,6 +61,19 @@ app.get('/useractivity', async (req, res) => {
     }
 });
 
+// Endpoint to get user information
+app.get('/userinfo', async (req, res) => {
+    console.log('Received request for user information'); // This log should appear when the route is hit
+    try {
+        const users = await UserSchema.find();
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching user information:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+// Endpoint to get purge history
 app.get('/api/purge-history', async (req, res) => {
     console.log('Received request for purge history');
     try {
@@ -86,6 +102,7 @@ app.get('/faq', async (req, res) => {
     console.log('FAQ populated'); // Add this log to ensure the route is hit
 });
 
+// Endpoint to get blacklist
 app.get('/blacklist', async (req, res) => {
     console.log('Received request for blacklist data');
     try {
@@ -157,8 +174,10 @@ app.post('/blacklist/remove', async (req, res) => {
     }
 });
 
-
-
+// Endpoint to get roles
+app.get('/roles', async (req, res) => {
+    console.log('Received request for roles data'); // Log when the route is hit
+});
 
 
 // Start the bot
