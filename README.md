@@ -87,6 +87,7 @@ https://github.com/GGC-SD/DiscordBot.git
 
 ## Working Features
 1. ***Dashboard:*** The bot now has an authenticated login for admins only web based UI dashboard that, in the future, will be the only point of interaction with the bot. 
+    - Login page which authenticates whether a user has an admin role to access the dashboard.
     - Pages for each command that are accessible from the hamburger in the navbar under 'Commands' which open the sidebar on the left of the page. 
       - User Activity - displays an overview of user activity within the application, including their latest messages, reactions, and voice interactions in the ford of an interactive table.
       - Inactivity - displays an overview of inactive users within the application in the form of an interactive table.
