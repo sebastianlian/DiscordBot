@@ -58,6 +58,7 @@ app.get('/auth/discord', (req, res) => {
     res.redirect(discordAuthUrl);
 });
 
+// TODO: MAKE A PAGE FOR THIS
 // Endpoint for auth login callback
 app.get('/auth/discord/callback', async (req, res) => {
     const code = req.query.code;
