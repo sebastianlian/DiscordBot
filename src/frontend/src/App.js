@@ -1,5 +1,4 @@
-// Routes are defined here for access to pages
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './themes/Themes'; // Import the custom theme
@@ -8,28 +7,56 @@ import Home from './pages/Home';
 import PurgePage from './pages/PurgePage';
 import UserActivityPage from './pages/UserActivityPage';
 import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
 import BlacklistPage from "./pages/BlacklistPage";
 import AccountPage from "./pages/AccountPage";
 import FAQPage from "./pages/FAQPage";
 import RolesPage from "./pages/RolesPage";
+import ProtectedRoute from './components/ProtectedRoute';
+import LoginSuccessPage from './pages/LoginSuccessPage';
 
 function App() {
+    const [isAdmin, setIsAdmin] = useState(null);
+
+    // Simulate checking if the user has an admin role
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user')); // Or fetch from your auth provider
+        console.log('Retrieved user:', user);
+
+        if (user) {
+            const isAdminUser = user.roles.some(role => role.roleName.toLowerCase() === 'admin');
+            console.log('Is user an admin?', isAdminUser);
+            setIsAdmin(isAdminUser);
+        }
+    }, []);
+
+
     return (
         <ThemeProvider theme={theme}>
             <Router>
                 <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/useractivity" element={<UserActivityPage />} />
-                    <Route path="/inactivity" element={<Inactivity />} />
-                    <Route path="/purge" element={<PurgePage />} />
-                    <Route path="/blacklist" element={<BlacklistPage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/signup" element={<SignupPage />} />
-                    <Route path="/account" element={<AccountPage />} />
-                    <Route path="/faq" element={<FAQPage />} />
-                    <Route path="/roles" element={<RolesPage />} />
+                    {/* Route for login success handling */}
+                    <Route path="/login-success" element={<LoginSuccessPage />} />
 
+                    {/* Wrap all routes with ProtectedRoute */}
+                    <Route
+                        path="/*"
+                        element={
+                            <ProtectedRoute isAllowed={isAdmin} redirectPath="/login">
+                                <Routes>
+                                    <Route path="/" element={<Home />} />
+                                    <Route path="/useractivity" element={<UserActivityPage />} />
+                                    <Route path="/inactivity" element={<Inactivity />} />
+                                    <Route path="/purge" element={<PurgePage />} />
+                                    <Route path="/blacklist" element={<BlacklistPage />} />
+                                    <Route path="/account" element={<AccountPage />} />
+                                    <Route path="/faq" element={<FAQPage />} />
+                                    <Route path="/roles" element={<RolesPage />} />
+                                </Routes>
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* Login page route outside ProtectedRoute */}
+                    <Route path="/login" element={<LoginPage />} />
                 </Routes>
             </Router>
         </ThemeProvider>

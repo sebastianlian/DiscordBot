@@ -1,4 +1,33 @@
-const UserSchema = require('../models/userSchema'); // Ensure correct path to your model
+const UserSchema = require('../models/userSchema'); // Ensure the path is correct
+
+async function checkIfUserIsAdmin(userId) {
+    try {
+        console.log(`Checking admin status for user ID: ${userId}`); // Debugging log
+        const user = await UserSchema.findOne({ userId: userId });
+
+        if (!user) {
+            console.log('User not found');
+            return false; // User not found
+        }
+
+        if (!user.roles) {
+            console.log('User found but no roles associated');
+            return false; // No roles associated
+        }
+
+        console.log('User roles:', user.roles); // Debugging log
+
+        // Check if the user has a role named 'Admin'
+        const hasAdminRole = user.roles.some(role => role.roleName.toLowerCase() === 'admin');
+
+        console.log('Is user an admin:', hasAdminRole); // Debugging log
+        return hasAdminRole;
+    } catch (error) {
+        console.error('Error checking if user is admin:', error);
+        return false;
+    }
+}
+
 
 async function logUsersAndRoles(GUILD_ID) {
     try {
@@ -44,4 +73,4 @@ async function logUsersAndRoles(GUILD_ID) {
     }
 }
 
-module.exports = { logUsersAndRoles };
+module.exports = { logUsersAndRoles, checkIfUserIsAdmin };

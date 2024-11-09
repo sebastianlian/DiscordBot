@@ -8,6 +8,10 @@ const UserActivity = require('../models/userActivitySchema');
 const { PurgeHistory } = require('../models/purgeHistorySchema');
 const { blackListDB } = require('../models/blacklistSchema');
 const UserSchema = require('../models/userSchema');
+const { checkIfUserIsAdmin } = require('../functions/userInformation');
+
+
+const axios = require('axios');
 
 const app = express();
 const PORT = process.env.PORT || 5011;
@@ -21,9 +25,22 @@ mongoose.connect(databaseToken)
 
 require('dotenv').config({ path: `${__dirname}/../.env` });
 
+// Gets these from the dotenv
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
+
+// Debug for missing CLIENT_ID or CLIENT_SECRET
+if (!CLIENT_ID || !CLIENT_SECRET) {
+    console.error('Missing CLIENT_ID or CLIENT_SECRET in environment variables');
+    console.log('CLIENT_ID:', CLIENT_ID);
+    console.log('CLIENT_SECRET:', CLIENT_SECRET);
+    process.exit(1);
+}
+
+console.log('CLIENT_ID:', CLIENT_ID);
+console.log('CLIENT_SECRET:', CLIENT_SECRET ? 'Exists' : 'Missing');
+console.log('REDIRECT_URI:', REDIRECT_URI);
 
 // Enable CORS for all routes
 app.use(cors());
@@ -33,6 +50,70 @@ app.use(express.json());
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+});
+
+// Endpoint for auth login
+app.get('/auth/discord', (req, res) => {
+    const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify guilds.members.read`;
+    res.redirect(discordAuthUrl);
+});
+
+// Endpoint for auth login callback
+app.get('/auth/discord/callback', async (req, res) => {
+    const code = req.query.code;
+
+    if (!code) {
+        return res.status(400).json({ message: 'Authorization code is required' });
+    }
+
+    try {
+        // Exchange the code for an access token
+        const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', new URLSearchParams({
+            client_id: CLIENT_ID,
+            client_secret: CLIENT_SECRET,
+            grant_type: 'authorization_code',
+            code: code,
+            redirect_uri: REDIRECT_URI,
+        }), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+
+
+        const accessToken = tokenResponse.data.access_token;
+
+        // Fetch user information from Discord
+        const userResponse = await axios.get('https://discord.com/api/users/@me', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        const user = userResponse.data;
+        console.log('Discord user:', user);
+
+        // Check if the user is an admin
+        const isAdmin = await checkIfUserIsAdmin(user.id);
+
+        if (isAdmin) {
+            const userData = {
+                id: user.id,
+                username: user.username,
+                roles: [{ roleName: 'Admin' }]
+            };
+            console.log('Redirecting to client with user data:', userData);
+
+            // Redirect with user data in the query string
+            res.redirect(`http://localhost:3000/login-success?user=${encodeURIComponent(JSON.stringify(userData))}`);
+        } else {
+            console.log('Access denied: User does not have admin privileges');
+            res.status(403).send('Access denied: You do not have admin privileges.');
+        }
+    } catch (error) {
+        console.error('Error during Discord OAuth2 flow:', error);
+        res.status(500).json({ message: 'An error occurred during Discord authentication' });
+    }
 });
 
 // Endpoint to get inactivity
