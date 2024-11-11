@@ -6,10 +6,11 @@ const bot = require('../index');
 const { inactiveDB } = require('../models/inactivitySchema');
 const UserActivity = require('../models/userActivitySchema');
 const { PurgeHistory } = require('../models/purgeHistorySchema');
-const { blackListDB } = require('../models/blacklistSchema');
 const UserSchema = require('../models/userSchema');
+const { blackListDB } = require('../models/blacklistSchema'); // Adjust path if necessary
 const { checkIfUserIsAdmin } = require('../functions/userInformation');
-
+const { executePurge } = require('../commands/purge');
+// console.log('blackListDB model:', blackListDB);
 
 const axios = require('axios');
 
@@ -43,7 +44,10 @@ console.log('CLIENT_SECRET:', CLIENT_SECRET ? 'Exists' : 'Missing');
 console.log('REDIRECT_URI:', REDIRECT_URI);
 
 // Enable CORS for all routes
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
 
 // Enable JSON parsing middleware
 app.use(express.json());
@@ -155,8 +159,8 @@ app.get('/userinfo', async (req, res) => {
     }
 });
 
-// Endpoint to get purge history
-app.get('/api/purge-history', async (req, res) => {
+//Endpoint to get purge history
+app.get('/purge-history', async (req, res) => {
     console.log('Received request for purge history');
     try {
         const purgeHistory = await PurgeHistory.find()
@@ -180,6 +184,7 @@ app.get('/api/purge-history', async (req, res) => {
     }
 });
 
+//Endpoint for FAQ
 app.get('/faq', async (req, res) => {
     console.log('FAQ populated'); // Add this log to ensure the route is hit
 });
@@ -260,6 +265,32 @@ app.post('/blacklist/remove', async (req, res) => {
 app.get('/roles', async (req, res) => {
     console.log('Received request for roles data'); // Log when the route is hit
 });
+//POST /purge - Purge inactive users from guild
+app.post('/purge', async (req, res) => {
+    try {
+        const guild = client.guilds.cache.first();
+        if (!guild) {
+            throw new Error("No guild available");
+        }
+
+        const result = await executePurge(guild);
+
+        res.json({
+            success: true,
+            message: `Successfully purged ${result.purgedCount} users`,
+            purgedCount: result.purgedCount,
+            purgedUsers: result.purgedUsers
+        })
+    }
+    catch {
+        console.error('Error executing purge', error);
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Failed to execute purge'
+        });
+    }
+});
+
 
 
 // Start the bot
