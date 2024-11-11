@@ -2,6 +2,8 @@
 require('dotenv').config({ path: `${__dirname}/.env` });
 //comment for testing
 
+const path = require('path');
+
 // Import necessary modules from discord.js
 const { Client, IntentsBitField, GatewayIntentBits, Collection } = require('discord.js');
 
@@ -29,7 +31,7 @@ global.client = new Client({
 client.commands = new Collection();
 
 // Read all command files from the "commands" directory
-const commandFiles = fs.readdirSync("../commands").filter(file => file.endsWith(".js"));
+const commandFiles = fs.readdirSync(path.join(__dirname, 'commands')).filter(file => file.endsWith(".js"));
 
 // Array to hold command data
 const commands = [];
@@ -37,17 +39,17 @@ const commands = [];
 // Loop through each command file
 for (const file of commandFiles) {
     // Require the command file and extract command data
-    const command = require(`./commands/${file}`);
+    const command = require(path.join(__dirname, 'commands', file));
     commands.push(command.data.toJSON());
     client.commands.set(command.data.name, command);
 }
 
 // Read all event files from the "events" directory
-const eventFiles = fs.readdirSync("../events").filter(file => file.endsWith(".js"));
+const eventFiles = fs.readdirSync(path.join(__dirname, 'events')).filter(file => file.endsWith(".js"));
 
 // Loop through each event file
 for (const file of eventFiles) {
-    const events = require(`./events/${file}`);
+    const events = require(path.join(__dirname, 'events', file));
     if (events.once) {
         client.once(events.name, (...args) => events.execute(...args, commands));
     } else {

@@ -7,6 +7,7 @@ const { inactiveDB } = require('../models/inactivitySchema');
 const UserActivity = require('../models/userActivitySchema'); // Ensure correct path to your schema file
 const { PurgeHistory } = require('../models/purgeHistorySchema');
 const { blackListDB } = require('../models/blacklistSchema'); // Adjust path if necessary
+const { executePurge } = require('../commands/purge');
 // console.log('blackListDB model:', blackListDB);
 
 const app = express();
@@ -20,7 +21,10 @@ mongoose.connect(databaseToken)
     .catch(err => console.error('MongoDB connection error:', err));
 
 // Enable CORS for all routes
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
 
 // Enable JSON parsing middleware
 app.use(express.json());
@@ -58,7 +62,7 @@ app.get('/useractivity', async (req, res) => {
     }
 });
 
-app.get('/api/purge-history', async (req, res) => {
+app.get('/purge-history', async (req, res) => {
     console.log('Received request for purge history');
     try {
         const purgeHistory = await PurgeHistory.find()
@@ -157,7 +161,31 @@ app.post('/blacklist/remove', async (req, res) => {
     }
 });
 
+//POST /purge - Purge inactive users from guild
+app.post('/purge', async (req, res) => {
+    try {
+        const guild = client.guilds.cache.first();
+        if (!guild) {
+            throw new Error("No guild available");
+        }
 
+        const result = await executePurge(guild);
+
+        res.json({
+            success: true,
+            message: `Successfully purged ${result.purgedCount} users`,
+            purgedCount: result.purgedCount,
+            purgedUsers: result.purgedUsers
+        })
+    }
+    catch {
+        console.error('Error executing purge', error);
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Failed to execute purge'
+        });
+    }
+});
 
 
 
