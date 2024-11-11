@@ -1,5 +1,5 @@
 const User = require("discord.js");
-const { blackListDB } = require('../models/blacklistSchema'); // Ensure correct path
+const { blackListDB } = require('../models/blacklistSchema');
 
 async function showBlacklistDB(client) {
     const doc = await blackListDB.findOne();

@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Navbar from "../components/Navbar";
 import { Typography, Box, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is available
-import '../App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const InactivityPage = () => {
     const [inactiveUsers, setInactiveUsers] = useState([]);
@@ -42,14 +41,23 @@ const InactivityPage = () => {
     return (
         <>
             <Navbar />
-            <div className="container my-4"> {/* Bootstrap container */}
+            <div className="container my-4">
                 <Typography variant="h4" className="text-center mb-4">
                     Inactive Users
                 </Typography>
-                <div className="row justify-content-center"> {/* Bootstrap row for centering */}
+
+                <div className="container">
+                    <Typography variant="body1" className="text-secondary mb-4 justified-text">
+                        This table provides an overview of inactive users within the application. Use the headers of the
+                        table which are toggleable to quickly find specific users. To refresh the table toggle
+                        the refresh button below the table.
+                    </Typography>
+                </div>
+
+                <div className="row justify-content-center">
                     <div className="col-md-8">
                         {inactiveUsers.length > 0 ? (
-                            <Box sx={{ height: 400, marginBottom: '1rem' }}>
+                            <Box sx={{height: 400, marginBottom: '1rem'}}>
                                 <DataGrid
                                     rows={inactiveUsers}
                                     columns={columns}
@@ -63,7 +71,7 @@ const InactivityPage = () => {
                                 No inactive users found.
                             </Typography>
                         )}
-                        <div className="d-flex justify-content-center mt-2"> {/* Bootstrap utility classes for centering */}
+                        <div className="d-flex justify-content-center mt-2">
                             <Button variant="contained" onClick={fetchInactiveUsers}>
                                 Refresh
                             </Button>

@@ -20,7 +20,6 @@ import {
     Grid
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import '../App.css';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(3),

@@ -1,5 +1,5 @@
 const { User } = require("discord.js");
-const { blackListDB } = require('../models/blacklistSchema'); // Ensure correct path
+const { blackListDB } = require('../models/blacklistSchema');
 
 
 async function insertBlacklistDB(userid, username) {
@@ -27,8 +27,6 @@ async function insertBlacklistDB(userid, username) {
         console.log(`New Schema has been created with ${userIdString} ${userNameString} as the first value.`);
     }
 }
-
-
 
 module.exports = {
     insertBlacklistDB

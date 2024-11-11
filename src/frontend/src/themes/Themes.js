@@ -1,4 +1,3 @@
-// src/theme.js
 import { createTheme } from '@mui/material/styles';
 
 const Theme = createTheme({
@@ -22,10 +21,10 @@ const Theme = createTheme({
             fontFamily: '"Press Start 2P", cursive',
             fontWeight: 500,
             color: '#697565',
-            textTransform: 'uppercase', // Transform text to uppercase
+            textTransform: 'uppercase',
         },
         h5: {
-            fontStyle: 'italic', // Example: make the font italic
+            fontStyle: 'italic',
         },
         h6: {
             fontFamily: '"Press Start 2P", cursive',
@@ -41,9 +40,24 @@ const Theme = createTheme({
         },
         body1: {
             lineHeight: 1.5,
+            textAlign: 'justify',
+            margin: '0 auto',
+            maxWidth: '80%',
         },
+
     },
+
+    // MUI CUSTOMIZATIONS
     components: {
+        // Form control customization
+        MuiFormControl: {
+            styleOverrides: {
+                root: {
+                    width: '100%', // Applies to all forms
+                },
+            },
+        },
+        // Paper customization
         MuiPaper: {
             styleOverrides: {
                 root: {
@@ -52,17 +66,18 @@ const Theme = createTheme({
                 },
             },
         },
+        // Data Grid customization
         MuiDataGrid: {
             styleOverrides: {
                 root: {
-                    '& .MuiDataGrid-cell': {
+                    '& .MuiDataGrid-cell': { // Custom class for cells
                         padding: '0.5rem',
                     },
-                    '& .MuiDataGrid-columnHeaders': {
+                    '& .MuiDataGrid-columnHeaders': { // Custom class for headers
                         backgroundColor: '#f5f5f5',
                         fontWeight: 'bold',
                     },
-                    '& .MuiDataGrid-row': {
+                    '& .MuiDataGrid-row': { // Custom class for rows
                         '&:hover': {
                             backgroundColor: '#f1f1f1',
                         },
@@ -70,6 +85,7 @@ const Theme = createTheme({
                 },
             },
         },
+        // Menu customization
         MuiMenuItem: {
             styleOverrides: {
                 root: {
@@ -81,21 +97,35 @@ const Theme = createTheme({
                 },
             },
         },
+        // Accordion customization
+        MuiAccordion: {
+            styleOverrides: {
+                root: {
+                    border: '1px solid #3C3D37',
+                    borderRadius: '8px',
+                    boxShadow: 'none',
+                    '&:before': {
+                        display: 'none',
+                    },
+                },
+            },
+        },
         // Sidebar customization
         MuiListItem: {
             styleOverrides: {
                 root: {
                     padding: '1rem',
                     borderRadius: '8px',
-                    color: 'black',  // Set the color to black
+                    color: 'black',
                     '&:hover': {
                         backgroundColor: '#000000',
-                        color: 'white',  // Change color to white on hover
+                        color: 'white',
                         textTransform: 'uppercase',
                     },
                 },
             },
         },
+        // List Item customization
         MuiListItemText: {
             styleOverrides: {
                 root: {
@@ -106,32 +136,38 @@ const Theme = createTheme({
                 },
             },
         },
-        // Ensure the sidebar title is black and unaffected by hover
+        // Typography customization
         MuiTypography: {
             styleOverrides: {
                 root: {
-                    '&.sidebar-title': {
-                        color: 'black', // Ensure the text is black
+                    '&.accordion-question': { // Custom class for accordion summary typography
+                        fontSize: '1.5rem',
+                        '&:hover': {
+                            textTransform: 'uppercase',
+                        },
+                    },
+                    '&.sidebar-title': { // Custom class for sidebar title
+                        color: 'black',
                         textTransform: 'none',
                         fontWeight: 'bold',
                         '&:hover': {
-                            backgroundColor: 'transparent', // No background color change on hover
-                            color: 'white', // Keep text color black on hover
+                            backgroundColor: 'transparent',
+                            color: 'white',
                         },
                     },
                 },
             },
         },
+        // Drawer customization
         MuiDrawer: {
             styleOverrides: {
                 paper: {
-                    backgroundColor: '#FFFFFF', // Background color of the sidebar
-                    color: '#000000', // Set text color in the sidebar to black
+                    backgroundColor: '#FFFFFF',
+                    color: '#000000',
                 },
             },
         },
     },
 });
-
 
 export default Theme;

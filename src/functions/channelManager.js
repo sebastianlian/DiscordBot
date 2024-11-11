@@ -1,8 +1,7 @@
-// Import necessary modules from discord.js for channel types
 const { ChannelType } = require('discord.js');
-const Channel = require('../models/channelSchema'); // Adjust your path accordingly
-const UserActivity = require('../models/userActivitySchema'); // Adjust your path accordingly
-const { getChalk } = require('../utility/utils'); // Adjust the path accordingly
+const Channel = require('../models/channelSchema');
+const UserActivity = require('../models/userActivitySchema');
+const { getChalk } = require('../utility/utils');
 
 // Create a Map to store user activities
 let userActivitiesMap = new Map();
@@ -104,8 +103,6 @@ async function trackAndLogTextChannelActivity(channel) {
             userActivitiesMap.set(userId, activity);
             console.log(`UserID: ${userId}, Activity:`, activity); // Log the structure for debugging
 
-            // Check if the new lastActive is more recent before updating
-            // const newLastActive = activity.lastActive;
             await UserActivity.findOneAndUpdate(
                 { userId: userId.toString(), channelName: channel.name },
                 {

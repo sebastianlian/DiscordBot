@@ -1,23 +1,46 @@
 require('dotenv').config({ path: `${__dirname}/../.env` }); // Navigate up one level to access the .env file in the src folder
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors'); // Import cors
+const cors = require('cors');
 const bot = require('../index');
 const { inactiveDB } = require('../models/inactivitySchema');
-const UserActivity = require('../models/userActivitySchema'); // Ensure correct path to your schema file
+const UserActivity = require('../models/userActivitySchema');
 const { PurgeHistory } = require('../models/purgeHistorySchema');
-const { blackListDB } = require('../models/blacklistSchema'); // Adjust path if necessary
-// console.log('blackListDB model:', blackListDB);
+const { blackListDB } = require('../models/blacklistSchema');
+const UserSchema = require('../models/userSchema');
+const { checkIfUserIsAdmin } = require('../functions/userInformation');
+
+
+const axios = require('axios');
 
 const app = express();
 const PORT = process.env.PORT || 5011;
 
 const databaseToken = process.env.databaseToken; // Make sure this is defined in your .env file
-console.log('Database Token:', databaseToken);
+// console.log('Database Token:', databaseToken); // Debugging line for ensuring database connection
 
 mongoose.connect(databaseToken)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
+
+require('dotenv').config({ path: `${__dirname}/../.env` });
+
+// Gets these from the dotenv
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+
+// Debug for missing CLIENT_ID or CLIENT_SECRET
+if (!CLIENT_ID || !CLIENT_SECRET) {
+    console.error('Missing CLIENT_ID or CLIENT_SECRET in environment variables');
+    console.log('CLIENT_ID:', CLIENT_ID);
+    console.log('CLIENT_SECRET:', CLIENT_SECRET);
+    process.exit(1);
+}
+
+console.log('CLIENT_ID:', CLIENT_ID);
+console.log('CLIENT_SECRET:', CLIENT_SECRET ? 'Exists' : 'Missing');
+console.log('REDIRECT_URI:', REDIRECT_URI);
 
 // Enable CORS for all routes
 app.use(cors());
@@ -29,11 +52,72 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-// // Test for mongoose connection in server.js
-// app.get('/', (req, res) => {
-//     res.send('Hello World!');
-// });
+// Endpoint for auth login
+app.get('/auth/discord', (req, res) => {
+    const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify guilds.members.read`;
+    res.redirect(discordAuthUrl);
+});
 
+// TODO: MAKE A PAGE FOR THIS
+// Endpoint for auth login callback
+app.get('/auth/discord/callback', async (req, res) => {
+    const code = req.query.code;
+
+    if (!code) {
+        return res.status(400).json({ message: 'Authorization code is required' });
+    }
+
+    try {
+        // Exchange the code for an access token
+        const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', new URLSearchParams({
+            client_id: CLIENT_ID,
+            client_secret: CLIENT_SECRET,
+            grant_type: 'authorization_code',
+            code: code,
+            redirect_uri: REDIRECT_URI,
+        }), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+
+
+        const accessToken = tokenResponse.data.access_token;
+
+        // Fetch user information from Discord
+        const userResponse = await axios.get('https://discord.com/api/users/@me', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        const user = userResponse.data;
+        console.log('Discord user:', user);
+
+        // Check if the user is an admin
+        const isAdmin = await checkIfUserIsAdmin(user.id);
+
+        if (isAdmin) {
+            const userData = {
+                id: user.id,
+                username: user.username,
+                roles: [{ roleName: 'Admin' }]
+            };
+            console.log('Redirecting to client with user data:', userData);
+
+            // Redirect with user data in the query string
+            res.redirect(`http://localhost:3000/login-success?user=${encodeURIComponent(JSON.stringify(userData))}`);
+        } else {
+            console.log('Access denied: User does not have admin privileges');
+            res.status(403).send('Access denied: You do not have admin privileges.');
+        }
+    } catch (error) {
+        console.error('Error during Discord OAuth2 flow:', error);
+        res.status(500).json({ message: 'An error occurred during Discord authentication' });
+    }
+});
+
+// Endpoint to get inactivity
 app.get('/inactivity', async (req, res) => {
     console.log('Received request for inactivity data'); // Log when the route is hit
     try {
@@ -46,8 +130,9 @@ app.get('/inactivity', async (req, res) => {
     }
 });
 
+// Endpoint to get user activity
 app.get('/useractivity', async (req, res) => {
-    console.log('Received request for user activities'); // Add this log to ensure the route is hit
+    console.log('Received request for user activities'); // Logs to ensure the route is hit
     try {
         const userActivitiesData = await UserActivity.find(); // Fetch all user activities
         console.log('User Activities Data:', userActivitiesData); // Log fetched data
@@ -58,6 +143,19 @@ app.get('/useractivity', async (req, res) => {
     }
 });
 
+// Endpoint to get user information
+app.get('/userinfo', async (req, res) => {
+    console.log('Received request for user information'); // This log should appear when the route is hit
+    try {
+        const users = await UserSchema.find();
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching user information:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+// Endpoint to get purge history
 app.get('/api/purge-history', async (req, res) => {
     console.log('Received request for purge history');
     try {
@@ -86,6 +184,7 @@ app.get('/faq', async (req, res) => {
     console.log('FAQ populated'); // Add this log to ensure the route is hit
 });
 
+// Endpoint to get blacklist
 app.get('/blacklist', async (req, res) => {
     console.log('Received request for blacklist data');
     try {
@@ -157,8 +256,10 @@ app.post('/blacklist/remove', async (req, res) => {
     }
 });
 
-
-
+// Endpoint to get roles
+app.get('/roles', async (req, res) => {
+    console.log('Received request for roles data'); // Log when the route is hit
+});
 
 
 // Start the bot

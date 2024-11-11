@@ -1,3 +1,4 @@
+// Navbar component needs to be added to each page to render the Navbar and Sidebar
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Container, Drawer, List, ListItem, ListItemText, Divider } from '@mui/material';
@@ -71,6 +72,15 @@ const Navbar = () => {
                                         vertical: 'top',
                                         horizontal: 'right',
                                     }}
+                                    PaperProps={{
+                                        sx: {
+                                            overflow: 'visible',
+                                            minWidth: '200px',
+                                            '& .MuiMenuItem-root': {
+                                                whiteSpace: 'nowrap',
+                                            },
+                                        },
+                                    }}
                                 >
                                     <MenuItem component={Link} to="/" onClick={handleMenuClose}>Home</MenuItem>
 
@@ -127,6 +137,9 @@ const Navbar = () => {
                         </ListItem>
                         <ListItem button className="sidebar-item" component={Link} to="/blacklist">
                             <ListItemText primary="Blacklist" />
+                        </ListItem>
+                        <ListItem button className="sidebar-item" component={Link} to="/roles">
+                            <ListItemText primary="Roles & Timers" />
                         </ListItem>
                     </List>
                 </div>

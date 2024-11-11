@@ -1,0 +1,10 @@
+[
+  {
+    "question": "How do I add the bot to my server?",
+    "answer": "To add the bot to your server, use the invite link provided by the bot's developer or find it in the bot's documentation."
+  },
+  {
+    "question": "What should I do if the bot is not responding?",
+    "answer": "If the bot is not responding, check if it has the necessary permissions and is online. Restart the bot if needed or contact support."
+  }
+]

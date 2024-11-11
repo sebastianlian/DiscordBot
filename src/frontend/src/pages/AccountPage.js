@@ -1,3 +1,4 @@
+// TODO: Find a way to put bot settings options here from the discord dashboard
 import React from 'react';
 import Navbar from "../components/Navbar";
 import { Typography } from '@mui/material';
