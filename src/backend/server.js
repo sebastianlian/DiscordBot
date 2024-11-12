@@ -44,7 +44,11 @@ console.log('CLIENT_SECRET:', CLIENT_SECRET ? 'Exists' : 'Missing');
 console.log('REDIRECT_URI:', REDIRECT_URI);
 
 // Enable CORS for all routes
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
+
 
 // Enable JSON parsing middleware
 app.use(express.json());
@@ -171,7 +175,7 @@ app.get('/users', async (req, res) => {
 });
 
 // Endpoint to get purge history
-app.get('/api/purge-history', async (req, res) => {
+app.get('/purge-history', async (req, res) => {
     console.log('Received request for purge history');
     try {
         const purgeHistory = await PurgeHistory.find()
