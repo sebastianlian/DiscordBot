@@ -53,7 +53,25 @@ const Theme = createTheme({
         MuiFormControl: {
             styleOverrides: {
                 root: {
-                    width: '100%', // Applies to all forms
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    margin: 'auto',
+                    width: '80%',
+                    padding: '16px',
+                },
+            },
+        },
+        // Select customization
+        MuiSelect: {
+            styleOverrides: {
+                root: {
+                    textAlign: 'center',
+                },
+                select: {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                 },
             },
         },
@@ -64,20 +82,32 @@ const Theme = createTheme({
                     padding: '1rem',
                     borderRadius: '12px',
                 },
+                // Specific styles for modal Paper components
+                modalPaper: {
+                    padding: '2rem',
+                    borderRadius: '12px',
+                    border: '1px solid #3C3D37',
+                    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                    backgroundColor: '#FFFFFF',
+                    outline: 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                },
             },
         },
         // Data Grid customization
         MuiDataGrid: {
             styleOverrides: {
                 root: {
-                    '& .MuiDataGrid-cell': { // Custom class for cells
+                    '& .MuiDataGrid-cell': {
                         padding: '0.5rem',
                     },
-                    '& .MuiDataGrid-columnHeaders': { // Custom class for headers
+                    '& .MuiDataGrid-columnHeaders': {
                         backgroundColor: '#f5f5f5',
                         fontWeight: 'bold',
                     },
-                    '& .MuiDataGrid-row': { // Custom class for rows
+                    '& .MuiDataGrid-row': {
                         '&:hover': {
                             backgroundColor: '#f1f1f1',
                         },
@@ -129,9 +159,9 @@ const Theme = createTheme({
         MuiListItemText: {
             styleOverrides: {
                 root: {
-                    color: 'black',  // Ensure text remains black
+                    color: 'black',
                     '&:hover': {
-                        color: 'white',  // Change to white on hover
+                        color: 'white',
                     },
                 },
             },
@@ -140,13 +170,13 @@ const Theme = createTheme({
         MuiTypography: {
             styleOverrides: {
                 root: {
-                    '&.accordion-question': { // Custom class for accordion summary typography
+                    '&.accordion-question': {
                         fontSize: '1.5rem',
                         '&:hover': {
                             textTransform: 'uppercase',
                         },
                     },
-                    '&.sidebar-title': { // Custom class for sidebar title
+                    '&.sidebar-title': {
                         color: 'black',
                         textTransform: 'none',
                         fontWeight: 'bold',
@@ -167,6 +197,17 @@ const Theme = createTheme({
                 },
             },
         },
+        // Modal customization
+        MuiModal: {
+            styleOverrides: {
+                root: {
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                },
+            },
+        },
+
     },
 });
 

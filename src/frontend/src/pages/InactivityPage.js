@@ -1,3 +1,4 @@
+// TODO: Once a user is kicked, they should no longer appear as inactive in the table.
 import React, { useEffect, useState } from 'react';
 import Navbar from "../components/Navbar";
 import { Typography, Box, Button } from '@mui/material';

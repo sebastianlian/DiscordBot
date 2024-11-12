@@ -6,8 +6,8 @@ const bot = require('../index');
 const { inactiveDB } = require('../models/inactivitySchema');
 const UserActivity = require('../models/userActivitySchema');
 const { PurgeHistory } = require('../models/purgeHistorySchema');
+const { blackListDB } = require('../models/blacklistSchema');
 const UserSchema = require('../models/userSchema');
-const { blackListDB } = require('../models/blacklistSchema'); // Adjust path if necessary
 const { checkIfUserIsAdmin } = require('../functions/userInformation');
 const { executePurge } = require('../commands/purge');
 // console.log('blackListDB model:', blackListDB);
@@ -44,10 +44,7 @@ console.log('CLIENT_SECRET:', CLIENT_SECRET ? 'Exists' : 'Missing');
 console.log('REDIRECT_URI:', REDIRECT_URI);
 
 // Enable CORS for all routes
-app.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true
-}));
+app.use(cors());
 
 // Enable JSON parsing middleware
 app.use(express.json());
@@ -159,8 +156,22 @@ app.get('/userinfo', async (req, res) => {
     }
 });
 
-//Endpoint to get purge history
-app.get('/purge-history', async (req, res) => {
+// GET /users - Returns all users with their userId and userName
+app.get('/users', async (req, res) => {
+    try {
+        const users = await UserSchema.find({}, { userId: 1, userName: 1, _id: 0 });
+        if (!users || users.length === 0) {
+            return res.status(404).json({ message: 'No users found' });
+        }
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ message: 'Failed to fetch users' });
+    }
+});
+
+// Endpoint to get purge history
+app.get('/api/purge-history', async (req, res) => {
     console.log('Received request for purge history');
     try {
         const purgeHistory = await PurgeHistory.find()
@@ -265,6 +276,7 @@ app.post('/blacklist/remove', async (req, res) => {
 app.get('/roles', async (req, res) => {
     console.log('Received request for roles data'); // Log when the route is hit
 });
+
 //POST /purge - Purge inactive users from guild
 app.post('/purge', async (req, res) => {
     try {
