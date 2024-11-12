@@ -155,6 +155,20 @@ app.get('/userinfo', async (req, res) => {
     }
 });
 
+// GET /users - Returns all users with their userId and userName
+app.get('/users', async (req, res) => {
+    try {
+        const users = await UserSchema.find({}, { userId: 1, userName: 1, _id: 0 });
+        if (!users || users.length === 0) {
+            return res.status(404).json({ message: 'No users found' });
+        }
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ message: 'Failed to fetch users' });
+    }
+});
+
 // Endpoint to get purge history
 app.get('/api/purge-history', async (req, res) => {
     console.log('Received request for purge history');
