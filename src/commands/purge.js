@@ -2,29 +2,34 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder } = r
 const { ButtonStyle, PermissionFlagsBits } = require("discord.js");
 const { getInactiveUsers } = require("../functions/inactivity");
 const { PurgeHistory } = require("../models/purgeHistorySchema");
+const { blackListDB } = require("../models/blacklistSchema"); 
 
 async function executePurge(guild) {
     const inactiveUsers = await getInactiveUsers();
     const purgedUsers = [];
-    // console.log("Inactive Users:", inactiveUsers); For testing
 
-    // if (!(inactiveUsers instanceof Map)) {
-    //     console.error("Error: inactiveUsers is not a Map");
-    //     return;
-    // } For testing
+    //Get blacklist for exclusions
+    const blacklistDoc = await blackListDB.findOne();
+    const blacklistedUserIds = blacklistDoc ? blacklistDoc.blackListedUsers.map(user => user.userId) : [];
 
     for (const [userId, userData] of inactiveUsers.entries()) { // Iterate over the Map
+        //Skip user if they are on the blacklist
+        if (blacklistedUserIds.includes(userId)) {
+            console.log(`Skipping blacklisterd user ${userId}`);
+            continue;
+        }
+        
         const member = await guild.members.fetch(userId).catch(() => null);
 
         if (member) {
             try {
-                // kicks members who are in the list and updates the purged count
+                // kicks members who are in the inactive list and updates the purged count
                 await member.kick("Inactive user purge");
                 purgedUsers.push({
                     userId: userId,
                     username: member.user.username
                 });
-                console.log("Purge executed successfully");
+                console.log("Purge executed successfully for user", userId);
             } catch (error) {
                 console.error(`Error kicking user ${userId}: ${error}`);
             }
