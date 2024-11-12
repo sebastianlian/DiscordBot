@@ -103,7 +103,7 @@ https://github.com/GGC-SD/DiscordBot.git
    - <ins>/blacklist show:</ins> Shows the current blacklisted user/roles.
    - <ins>/blacklist add (user/role)</ins> Lets you add a specific user/role to a blacklist which makes them bypass the purges.
    - <ins>/blacklist remove (user/role):</ins> Lets you remove a specific user/role from the blacklist.
-   - <ins>/purge:</ins> Starts a manual purge which will gather all inactive users and send specified channel for confirmation.
+   - <ins>/purge:</ins> Starts a manual purge which will removed inactive users from server and send confirmation to specified channel.
    - <ins>/roletimer (role name) (amount of time in days):</ins> Sets the grace period for a certain role.
    - <ins>/setpurge (time in days):</ins> Sets the specified automated purge window (in days).
    - <ins>/timer (role) (time)</ins> Sets a time window (in days) for a role before considering them inactive.
