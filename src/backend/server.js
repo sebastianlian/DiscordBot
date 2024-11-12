@@ -9,7 +9,8 @@ const { PurgeHistory } = require('../models/purgeHistorySchema');
 const { blackListDB } = require('../models/blacklistSchema');
 const UserSchema = require('../models/userSchema');
 const { checkIfUserIsAdmin } = require('../functions/userInformation');
-
+const { executePurge } = require('../commands/purge');
+// console.log('blackListDB model:', blackListDB);
 
 const axios = require('axios');
 
@@ -194,6 +195,7 @@ app.get('/api/purge-history', async (req, res) => {
     }
 });
 
+//Endpoint for FAQ
 app.get('/faq', async (req, res) => {
     console.log('FAQ populated'); // Add this log to ensure the route is hit
 });
@@ -274,6 +276,33 @@ app.post('/blacklist/remove', async (req, res) => {
 app.get('/roles', async (req, res) => {
     console.log('Received request for roles data'); // Log when the route is hit
 });
+
+//POST /purge - Purge inactive users from guild
+app.post('/purge', async (req, res) => {
+    try {
+        const guild = client.guilds.cache.first();
+        if (!guild) {
+            throw new Error("No guild available");
+        }
+
+        const result = await executePurge(guild);
+
+        res.json({
+            success: true,
+            message: `Successfully purged ${result.purgedCount} users`,
+            purgedCount: result.purgedCount,
+            purgedUsers: result.purgedUsers
+        })
+    }
+    catch {
+        console.error('Error executing purge', error);
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Failed to execute purge'
+        });
+    }
+});
+
 
 
 // Start the bot

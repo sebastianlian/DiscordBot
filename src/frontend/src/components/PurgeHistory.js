@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Typography, Box, CircularProgress, Paper } from '@mui/material';
 
-const API_BASE_URL = 'http://localhost:5011';
-
 function PurgeHistory() {
     const [purgeHistory, setPurgeHistory] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -12,7 +10,7 @@ function PurgeHistory() {
     useEffect(() => {
         const fetchPurgeHistory = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}/api/purge-history`, {
+                const response = await axios.get(`http://localhost:5011/purge-history`, {
                     credentials: 'include'
                 });
                 console.log('Purge history response:', response.data);
