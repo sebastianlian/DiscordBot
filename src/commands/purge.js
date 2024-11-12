@@ -4,7 +4,7 @@ const { getInactiveUsers } = require("../functions/inactivity");
 const { PurgeHistory } = require("../models/purgeHistorySchema");
 const { blackListDB } = require("../models/blacklistSchema"); 
 
-async function executePurge(guild) {
+async function executePurge(guild, executorId, executorUsername) {
     const inactiveUsers = await getInactiveUsers();
     const purgedUsers = [];
 
@@ -38,8 +38,8 @@ async function executePurge(guild) {
 
     try {
         await PurgeHistory.create({
-            userId: "SYSTEM",
-            username: "Dashboard",
+            userId: executorId,
+            username: executorUsername,
             executionDate: new Date(),
             purgedCount: purgedUsers.length,
             purgedUsers: purgedUsers,
