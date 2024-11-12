@@ -12,19 +12,17 @@ import {
     Alert,
     Box,
     CircularProgress,
+    Paper
 } from '@mui/material';
-<<<<<<< HEAD
 import { styled } from '@mui/material/styles';
+import { DataGrid } from '@mui/x-data-grid';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(3),
     marginTop: theme.spacing(3),
     height: '100%'
 }));
-=======
-import { DataGrid } from '@mui/x-data-grid';
-import 'bootstrap/dist/css/bootstrap.min.css';
->>>>>>> Najee-Branch
 
 const PurgePage = () => {
     const [inactiveUsers, setInactiveUsers] = useState([]);
