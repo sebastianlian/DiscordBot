@@ -1,13 +1,40 @@
-// TODO: Need to find a way to have the admin add new users to the blacklist
+// TODO: The Add Users button opens the form that's in the modal - the uses that populate in the drop down need to exclude used that are already on the blacklist
+// import mui styles lines 8
 import React, { useEffect, useState } from 'react';
 import Navbar from "../components/Navbar";
-import { Typography, Box, Button } from '@mui/material';
+import {Typography, Box, Button, Modal, FormControl, Select, MenuItem, InputLabel, Paper} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { makeStyles } from '@mui/styles'; // Need this to customize modal
+
+// Allows for customizing the modal without affecting other Paper components
+const useStyles = makeStyles((theme) => ({
+    modalPaper: {
+        ...theme.components.MuiPaper.styleOverrides.modalPaper,
+    },
+}));
 
 const BlacklistPage = () => {
     const [blacklistedUsers, setBlacklistedUsers] = useState([]);
     const [selectedUserIds, setSelectedUserIds] = useState([]);
+    const [availableUsers, setAvailableUsers] = useState([]); // State for available users
+    const [selectedUserToAdd, setSelectedUserToAdd] = useState(''); // State for user selected to be added
+    const [isModalOpen, setModalOpen] = useState(false);
+    const classes = useStyles();
+
+    // Fetch available users to populate the dropdown
+    const fetchAvailableUsers = async () => {
+        try {
+            const response = await fetch('http://localhost:5011/users'); // Endpoint for fetching all users
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setAvailableUsers(data);
+        } catch (error) {
+            console.error('Error fetching available users:', error);
+        }
+    };
 
     // unction to handle fetching blacklisted users from the server
     const fetchBlacklistedUsers = async () => {
@@ -31,8 +58,39 @@ const BlacklistPage = () => {
         }
     };
 
+    // Add a new user to the blacklist
+    const handleAddUser = async () => {
+        if (!selectedUserToAdd) {
+            alert('Please select a user to add.');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:5011/blacklist/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userId: selectedUserToAdd.userId, userName: selectedUserToAdd.userName })
+            });
+
+            if (response.ok) {
+                console.log(`User ${selectedUserToAdd.userId} added to the blacklist.`);
+                setModalOpen(false);
+                fetchBlacklistedUsers(); // Refresh the blacklist
+            } else {
+                const responseBody = await response.json();
+                console.error('Error adding user:', responseBody);
+            }
+        } catch (error) {
+            console.error('Error adding user to the blacklist:', error);
+        }
+    };
+
+
     useEffect(() => {
         fetchBlacklistedUsers();
+        fetchAvailableUsers();
     }, []);
 
     useEffect(() => {
@@ -89,8 +147,7 @@ const BlacklistPage = () => {
                     <Typography variant="body1" className="text-secondary mb-4 justified-text">
                         This page provides an overview of all blacklisted users within the application. You can review
                         and manage blacklisted entries using the table below, which displays user details such as their name and ID.
-                        Select users from the table to remove them from the blacklist. If a user is removed you must refresh
-                        the table to ensure the latest information is displayed.
+                        Select users from the table to remove them from the blacklist. Add users to the blacklist via the corresponding button.
                     </Typography>
 
                 </div>
@@ -141,6 +198,46 @@ const BlacklistPage = () => {
                             >
                                 Refresh
                             </Button>
+                            <Button
+                                variant="contained"
+                                className="ms-2"
+                                onClick={() => setModalOpen(true)}
+                            >
+                                Add Users
+                            </Button>
+
+                            {/* Modal for adding users */}
+                            <Modal open={isModalOpen} onClose={() => setModalOpen(false)} aria-labelledby="modal-title">
+                                <Paper className={classes.modalPaper}>
+                                    <Typography variant="h6" id="modal-title" gutterBottom>
+                                        Add a User to the Blacklist
+                                    </Typography>
+                                    <FormControl fullWidth margin="normal">
+                                        <InputLabel id="user-select-label">Select User</InputLabel>
+                                        <Select fullWidth margin="normal"
+                                            labelId="user-select-label"
+                                            value={selectedUserToAdd}
+                                            onChange={(e) => setSelectedUserToAdd(e.target.value)}
+                                        >
+                                            {/* Placeholder item */}
+                                            <MenuItem value="" disabled>
+                                                <em>Select a user</em>
+                                            </MenuItem>
+
+                                            {/* Map available users */}
+                                            {availableUsers.map((user) => (
+                                                <MenuItem key={user.userId} value={user}>
+                                                    {user.userName}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                    <Button variant="contained" onClick={handleAddUser} >
+                                        Add to Blacklist
+                                    </Button>
+                                </Paper>
+                            </Modal>
+
                         </div>
                     </div>
                 </div>

@@ -1,3 +1,4 @@
+// TODO: Once the users are kicked, they should no longer appear on the User Roles table.
 import Navbar from "../components/Navbar";
 import { Typography, Box, Button } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
