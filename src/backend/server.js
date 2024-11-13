@@ -284,12 +284,19 @@ app.get('/roles', async (req, res) => {
 //POST /purge - Purge inactive users from guild
 app.post('/purge', async (req, res) => {
     try {
+
+        const { executorId, executorUsername} = req.body;
+
+        if (!executorId || !executorUsername) {
+            throw new Error("Executor information is required");
+        }
+
         const guild = client.guilds.cache.first();
         if (!guild) {
             throw new Error("No guild available");
         }
 
-        const result = await executePurge(guild);
+        const result = await executePurge(guild, executorId, executorUsername);
 
         res.json({
             success: true,
@@ -298,7 +305,7 @@ app.post('/purge', async (req, res) => {
             purgedUsers: result.purgedUsers
         })
     }
-    catch {
+    catch (error) {
         console.error('Error executing purge', error);
         res.status(500).json({
             success: false,

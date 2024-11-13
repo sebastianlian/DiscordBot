@@ -81,6 +81,7 @@ const PurgePage = () => {
             // Log the raw data to see its structure
             console.log('Raw data:', data);
 
+            //TODO: This should work when timer is figured out, but check back anyway to make sure
             // Transform the data into the correct format
             const processedData = data.map(user => {
                 return {
@@ -108,13 +109,27 @@ const PurgePage = () => {
     const handlePurge = async () => {
         setPurgeInProgress(true);
         try {
+            //Get user dat from localStorage
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+            
+            //Debug
+            //console.log("Current user:", currentUser);
+
+            if (!currentUser || !currentUser.id) {
+                throw new Error("User information not found");
+            }
+
             const response = await fetch('http://localhost:5011/purge', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
-                credentials: 'include'
+                credentials: 'include',
+                body: JSON.stringify({
+                    executorId: currentUser.id,
+                    executorUsername: currentUser.username
+                })
             });
 
             if (!response.ok) {
@@ -126,9 +141,9 @@ const PurgePage = () => {
             setOpenDialog(false);
             setInactiveUsers([]);
             setError(`Successfully purged ${data.purgedCount} users`);
-        } catch (err) {
-            console.error('Purge error:', err);
-            setError(err.message || 'An unknown error occurred');
+        } catch (error) {
+            console.error('Purge error:', error);
+            setError(error.message || 'An unknown error occurred');
         } finally {
             setPurgeInProgress(false);
             setOpenDialog(false);

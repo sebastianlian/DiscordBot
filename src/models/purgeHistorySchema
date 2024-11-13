@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const purgeHistorySchema = new mongoose.Schema({
     userId: { type: String, required: true },
     username: { type: String, required: true },
-    executorUsername: { type: String, required: true },
     executionDate: { type: Date, default: Date.now },
     purgedUsers: [{
         userId: { type: String, required: true },
