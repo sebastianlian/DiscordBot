@@ -1,6 +1,6 @@
 ## TODO LIST
 - Automatically kick inactive users
 - Fix role based inactivity timing
-- Finish updating webpages for each bot command
-- Integrate usable buttons in dashboard to initiate bot commands instead of through discord chat
+- Integrate buttons, data grid, and form for updating role & timer section on role & timer webpage
+- Inactivity Page currently is not removing kicked users from the inactive users collection
 - Host the bot for 24hr access
