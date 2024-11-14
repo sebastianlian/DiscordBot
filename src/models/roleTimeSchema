@@ -1,23 +1,21 @@
 const mongoose = require("mongoose");
 
-
 const roleTimeSchema = new mongoose.Schema({
-    roleID: {
-      type: String,
-      required: true,
-    },
-    roleNames: {
-      type: String,
-      required: true,
-    },
-    days: {
-      type: int,
-      required: true,
-    },
-  });
+  roleId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  roleName: {
+    type: String,
+    required: true,
+  },
+  roleTimer: {
+    type: Number, // Timer in minutes
+    required: true,
+    default: 10,
+  },
+});
 
-  const RoleTimeDB = mongoose.model("RoleTime", roleTimeSchema);
-
-  module.exports = {
-    RoleTimeDB
-  }
+// Export the model
+module.exports = mongoose.model("RoleTimer", roleTimeSchema);

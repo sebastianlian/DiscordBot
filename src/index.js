@@ -12,6 +12,8 @@ const { storeChannels, refreshLatestMessages } = require('./functions/channelMan
 const { checkAndUpdateInactiveUsers, trackUserActivity, refreshInactiveUsers, loadUserActivityOnStartup} = require('./functions/inactivity');
 const { getChalk } = require('./utility/utils');
 const { logUsersAndRoles } = require('./functions/userInformation');
+const { startAutoPurge } = require('./commands/timer');
+const { initializeDefaultRoleTimers } = require("./commands/roletimer");
 
 
 // Import Node.js filesystem module for file operations
@@ -70,6 +72,17 @@ client.on('ready', async (clientInstance) => {
         console.log(chalk.green("Connected to DB"));
     } catch (error) {
         console.log(chalk.red('DB is disconnected'));
+    }
+
+    // Initialize default role timers and start the auto-purge function of the timer
+    try {
+        const guild = await client.guilds.fetch(process.env.GUILD_ID);
+        if (guild) {
+            startAutoPurge(guild);
+            await initializeDefaultRoleTimers(guild); // Call the function to set default timers
+        }
+    } catch (error) {
+        console.error("Error initializing default role timers:", error);
     }
 
     // Step 1: Load existing user activity from the database
